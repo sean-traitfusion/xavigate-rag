@@ -1,0 +1,44 @@
+
+services:
+  rag-api:
+    build: .
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+  postgres:
+    image: ankane/pgvector
+    container_name: xavigate_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: xavigate
+      POSTGRES_USER: xavigate_user
+      POSTGRES_PASSWORD: changeme
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  chroma:
+    image: chromadb/chroma
+    container_name: xavigate_chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+  # Optional: Jupyter for exploration
+  jupyter:
+    image: jupyter/base-notebook
+    container_name: xavigate_jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    command: start-notebook.sh --NotebookApp.token=''
+
+volumes:
+  pgdata:
+  chroma_data:
