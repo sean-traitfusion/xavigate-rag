@@ -1,7 +1,7 @@
 from chromadb import PersistentClient
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
-from db import get_connection
-from embeddings import get_embedding
+from backend.db import get_connection
+from backend.embeddings import get_embedding
 import uuid
 import json
 
