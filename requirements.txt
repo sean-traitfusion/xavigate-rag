@@ -5,3 +5,10 @@ tiktoken
 chromadb
 python-dotenv
 openai
+fastapi
+uvicorn[standard]
+pydantic
+pandas
+tqdm
+tenacity
+numpy

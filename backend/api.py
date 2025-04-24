@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 import os
 from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 
 
 load_dotenv()
@@ -15,6 +18,14 @@ print("🚀 API_KEY from env:", os.getenv("XAVIGATE_KEY"))
 API_KEY = os.getenv("XAVIGATE_KEY")
 
 app = FastAPI(title="Xavigate RAG Search API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/query")
@@ -42,28 +53,39 @@ async def query(
     except Exception as e:
         return {"error": str(e)}
     
-@app.get("/generate")
+class PromptRequest(BaseModel):
+    prompt: str
+    top_k: Optional[int] = 3
+    origin: Optional[str] = None
+    topic: Optional[str] = None
+    audience: Optional[str] = None
+
+@app.post("/generate")
 async def generate_answer(
-    prompt: str = Query(..., description="User's natural language question"),
-    top_k: int = Query(3, ge=1, le=10),
-    origin: Optional[str] = None,
-    topic: Optional[str] = None,
-    audience: Optional[str] = None,
+    body: PromptRequest,
     x_xavigate_key: str = Header(..., alias="X-XAVIGATE-KEY")
 ):
     if x_xavigate_key != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     filters = {}
-    if origin:
-        filters["origin"] = origin
-    if topic:
-        filters["topic"] = topic
-    if audience:
-        filters["audience"] = audience
+    if body.origin:
+        filters["origin"] = body.origin
+    if body.topic:
+        filters["topic"] = body.topic
+    if body.audience:
+        filters["audience"] = body.audience
 
-    results = run_query(prompt, top_k=top_k, filters=filters)
+    results = run_query(body.prompt, top_k=body.top_k, filters=filters)
+
+    # Ensure each result has a label
+    for i, result in enumerate(results):
+        result["term"] = result.get("metadata", {}).get("term", f"Source {i+1}")
+
     context = "\n\n".join([r["text"] for r in results])
+    print("📦 Sources returned to frontend:")
+    for r in results:
+        print(r)
 
     final_prompt = f"""
 You are an expert assistant helping users understand key ideas from internal documents. 
@@ -80,13 +102,12 @@ Context:
 ---
 
 Question:
-{prompt}
+{body.prompt}
 
 Answer:
 """.strip()
 
     try:
-        
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": final_prompt}],
@@ -98,7 +119,6 @@ Answer:
         return {"error": str(e)}
 
 if __name__ == "__main__":
-	uvicorn.run("backend.api:app", host="127.0.0.1", port=8000, reload=True)
-
-# if __name__ == "__main__":
-#    uvicorn.run("backend.api:app", host="0.0.0.0", port=8000, reload=True)
+    host = os.getenv("API_HOST", "0.0.0.0")
+    port = int(os.getenv("API_PORT", 8000))
+    uvicorn.run("backend.api:app", host=host, port=port, reload=True)
