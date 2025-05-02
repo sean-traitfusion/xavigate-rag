@@ -1,27 +1,72 @@
-from chunking import load_ad_framework, chunk_texts
-from db import insert_chunks, get_connection
-from vectorstore import get_unembedded_chunks, upsert_to_chroma
-from query import query_ad_framework
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 
-def documents_exist():
-    with get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute("SELECT COUNT(*) FROM documents")
-            return cur.fetchone()[0] > 0
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+print("🚀 main.py has been loaded", flush=True)
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+print("✅ CORS middleware loaded", flush=True)
 
 
-if __name__ == "__main__":
-    if not documents_exist():
-        print("📄 No documents found. Ingesting...")
-        texts = load_ad_framework("data/ad_framework.json")
-        print(f"🧪 Loaded {len(texts)} cleaned text blocks.")
-        chunks = chunk_texts(texts)
-        insert_chunks(chunks)
-    else:
-        print("✅ Documents already exist in DB, skipping ingestion.")
+try:
+    from backend.api import router as api_router
+    app.include_router(api_router)
+    print("✅ api_router loaded", flush=True)
+except Exception as e:
+    print("❌ Failed to load api_router:", e)
+    raise
 
-    # Embed and upsert into Chroma
-    docs = get_unembedded_chunks(limit=20)
-    upsert_to_chroma(docs)
+try:
+    from backend.memory.routes import router as memory_router
+    app.include_router(memory_router)
+    print("✅ memory_router loaded", flush=True)
+except Exception as e:
+    print("❌ Failed to load memory_router:", e)
+    raise
 
-    query_ad_framework("How does the AD framework handle misalignment in teams?")
+try:
+    from backend.onboarding.onboarding_routes import router as onboarding_router
+    app.include_router(onboarding_router)
+    print("✅ onboarding_router loaded", flush=True)
+except Exception as e:
+    print("❌ Failed to load onboarding_router:", e)
+    raise
+
+try:
+    from backend.session.session_routes import router as session_router
+    app.include_router(session_router)
+    print("✅ session_router loaded", flush=True)
+except Exception as e:
+    print("❌ Failed to load session_router:", e)
+    raise
+
+try:
+    from backend.session.aq_routes import router as aq_router
+    app.include_router(aq_router)
+    print("✅ aq_router loaded", flush=True)
+except Exception as e:
+    print("❌ Failed to load aq_router:", e)
+    raise
+
+try:
+    from backend.session.user_profile_routes import router as user_profile_router
+    app.include_router(user_profile_router)
+    print("✅ user_profile_router loaded", flush=True)
+except Exception as e:
+    print("❌ Failed to load user_profile_router:", e)
+    raise
+
+print("🚦 Routes loaded:", flush=True)
+for r in app.routes:
+    print(f"{r.path} — {r.methods}", flush=True)

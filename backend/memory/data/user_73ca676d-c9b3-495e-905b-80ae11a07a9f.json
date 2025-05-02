@@ -1,0 +1,27 @@
+{
+  "user_id": "73ca676d-c9b3-495e-905b-80ae11a07a9f",
+  "name": "Sean",
+  "onboarding_date": "2025-05-01 16:22:08.043165",
+  "baseline_ax": 50.0,
+  "baseline_aq": null,
+  "baseline_quadrant": "QII",
+  "ass": null,
+  "alignment_stage": "Early Discovery",
+  "dominant_traits": [
+    "Logical",
+    "Leading"
+  ],
+  "suppressed_traits": [
+    "Discovery"
+  ],
+  "alignment_tags": [],
+  "avatar_profile": null,
+  "alignment_index_history": [
+    50.0
+  ],
+  "alignment_quotient_history": [],
+  "quadrant_history": [],
+  "last_session_summary": null,
+  "coaching_ready_flag": false,
+  "trust_established_flag": true
+}

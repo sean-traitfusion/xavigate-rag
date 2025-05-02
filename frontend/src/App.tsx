@@ -1,11 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 import XaviChat from './XaviChat';
-
+import OnboardingWizard from './onboarding/OnboardingWizard'; // adjust if path differs
 
 function App() {
-  return <XaviChat />;
+  const [onboarded, setOnboarded] = useState(false);
+
+  return onboarded ? (
+    <XaviChat />
+  ) : (
+    <OnboardingWizard onComplete={() => setOnboarded(true)} />
+  );
 }
 
 export default App;

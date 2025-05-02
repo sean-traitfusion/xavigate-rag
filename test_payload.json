@@ -1,0 +1,8 @@
+{
+  "user_id": "sean123",
+  "name": "Sean",
+  "traits_used": ["Strategic"],
+  "traits_suppressed": ["Creative", "Healing"],
+  "environment_support": "Sometimes",
+  "environment_blockers": ["rigid structure"]
+}
