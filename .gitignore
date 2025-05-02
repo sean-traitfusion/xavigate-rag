@@ -1,2 +1,11 @@
 .env
 chroma_db/
+# Memory + session files
+backend/memory/data/*.json
+backend/memory/data/*.jsonl
+
+# Embedding cache
+data/embedding_cache.json
+
+# Local UI kit clone
+xavigate-ui-kit/
