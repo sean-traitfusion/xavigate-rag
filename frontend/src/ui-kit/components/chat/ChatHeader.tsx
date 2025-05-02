@@ -1,11 +1,12 @@
 import { Button } from '../shared/Button';
+import { useAuth } from '../../../context/AuthContext';
 
 type ChatHeaderProps = {
   avatar: string | null;
-  setAvatarPromptVisible: (value: boolean) => void;
+  tone?: string;
 };
 
-export default function ChatHeader({ avatar, setAvatarPromptVisible }: ChatHeaderProps) {
+export default function ChatHeader({ avatar, tone }: ChatHeaderProps) {
   return (
     <div
       style={{
@@ -23,15 +24,19 @@ export default function ChatHeader({ avatar, setAvatarPromptVisible }: ChatHeade
         </h2>
         {avatar && (
           <p style={{ margin: 0, fontSize: '0.875rem', color: '#666' }}>
-            Chatting with: <strong>{avatar}</strong>
-          </p>
-        )}
+          Chatting with: <strong>{avatar}</strong>
+        </p>
+      )}
+      {tone && (
+        <p style={{ margin: 0, fontSize: '0.75rem', color: '#999' }}>
+        Speaking as: <em>{tone}</em>
+      </p>
+)}
       </div>
 
       <Button
         variant="ghost"
         style={{ fontSize: '0.75rem' }}
-        onClick={() => setAvatarPromptVisible(true)}
       >
         Change
       </Button>

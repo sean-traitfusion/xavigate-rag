@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// Define the user type (expand later)
+type AvatarProfile = {
+  avatar_id: string;
+  prompt_framing: string;
+};
+
 type User = {
   name: string;
   uuid: string;
+  avatarProfile?: AvatarProfile;
 };
 
 // Define the shape of the context
@@ -11,6 +16,7 @@ interface AuthContextType {
   user: User | null;
   signIn: (username: string) => void;
   signOut: () => void;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 // Create the context with an initial null value
@@ -55,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, signOut, setUser }}>
       {children}
     </AuthContext.Provider>
   );

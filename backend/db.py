@@ -15,7 +15,23 @@ DB_CONFIG = {
 
 
 def get_connection():
-    return psycopg2.connect(**DB_CONFIG)
+    """Get a new Postgres connection, retrying if necessary."""
+    import time
+    # Retry connection in case Postgres is not ready yet
+    retries = int(os.getenv("DB_CONNECT_MAX_RETRIES", "10"))
+    delay = float(os.getenv("DB_CONNECT_RETRY_INTERVAL", "2"))
+    last_error = None
+    for attempt in range(1, retries + 1):
+        try:
+            return psycopg2.connect(**DB_CONFIG)
+        except psycopg2.OperationalError as e:
+            last_error = e
+            print(f"❌ Postgres connection attempt {attempt}/{retries} failed: {e}", flush=True)
+            if attempt < retries:
+                time.sleep(delay)
+    # All retries exhausted
+    print(f"⚠️ Could not connect to Postgres after {retries} attempts", flush=True)
+    raise last_error
 
 
 def insert_chunks(chunks, source="AD Framework"):

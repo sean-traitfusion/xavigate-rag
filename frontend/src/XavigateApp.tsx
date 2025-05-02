@@ -6,15 +6,17 @@ import SignIn from './ui-kit/components/account/SignIn';
 import Sidebar from './ui-kit/components/layout/Sidebar';
 import MobileHeader from './ui-kit/components/layout/MobileHeader';
 
-import HomeView from './ui-kit/components/home/HomeView';
+// import HomeView from './ui-kit/components/home/HomeView';
 import ChatView from './ui-kit/components/chat/RagChatView';
 import ReflectView from './ui-kit/components/reflect/ReflectView';
-import InsightsView from './ui-kit/components/insights/InsightsView';
-import MetricsView from './ui-kit/components/metrics/MetricsView';
+// import InsightsView from './ui-kit/components/insights/InsightsView';
+// import MetricsView from './ui-kit/components/metrics/MetricsView';
 import AvatarComposer from './ui-kit/components/avatar/AvatarComposer';
 import PlanView from './ui-kit/components/plan/PlanView';
 import AccountView from './ui-kit/components/account/AccountView';
-import ModulesView from './ui-kit/components/modules/ModulesView';
+// import ModulesView from './ui-kit/components/modules/ModulesView';
+import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
+
 
 function AppContent() {
   const { user } = useAuth();
@@ -41,12 +43,12 @@ function AppContent() {
 
   const renderView = () => {
     switch (activeView) {
-      case 'home': return <HomeView />;
+      // case 'home': return <HomeView />;
       case 'chat': return <ChatView />;
       case 'reflect': return <ReflectView />;
       case 'plan': return <PlanView />;
-      case 'insights': return <InsightsView />;
-      case 'metrics': return <MetricsView />;
+      // case 'insights': return <InsightsView />;
+      // case 'metrics': return <MetricsView />;
       case 'avatar':
         return (
           <AvatarComposer
@@ -55,7 +57,7 @@ function AppContent() {
             onSave={(profile) => console.log('✅ Avatar saved:', profile)}
           />
       );
-      case 'modules': return <ModulesView />;
+      // case 'modules': return <ModulesView />;
       case 'account': return <AccountView />;
       default: return <div><h1>Unknown View</h1></div>;
     }
@@ -98,7 +100,9 @@ function AppContent() {
 export default function XavigateApp() {
   return (
     <AuthProvider>
-      <AppContent />
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </AuthProvider>
   );
 }

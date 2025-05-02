@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Button } from '../shared/Button';
-import theme from '../../theme';
+import theme from '../../../ui-kit/Theme';
 
 type Reflection = {
   id: number;

@@ -54,10 +54,10 @@ class SessionMemory(BaseModel):
 
 class UserMemory(BaseModel):
     uuid: UUID
-    initial_personality_scores: Optional[dict]
-    score_explanations: Optional[dict]
-    trait_history: Optional[dict]
-    preferences: Optional[dict]
+    initial_personality_scores: Optional[dict] = None
+    score_explanations: Optional[dict] = None
+    trait_history: Optional[dict] = None
+    preferences: Optional[dict] = None
 
 
 # === ROUTES ===

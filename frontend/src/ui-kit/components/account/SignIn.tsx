@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 
 export default function SignIn() {
   const { signIn } = useAuth();
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState<string>('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim()) return;
     signIn(username.trim());

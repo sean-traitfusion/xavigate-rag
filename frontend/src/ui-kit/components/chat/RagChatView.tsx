@@ -3,6 +3,7 @@ import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
 import AvatarComposer from '../avatar/AvatarComposer';
+import { useAuth } from '../../../context/AuthContext';
 
 type Source = {
   term?: string;
@@ -36,16 +37,16 @@ function getOrCreateUserUUID(): string {
 }
 
 export default function RagChatView() {
+  const { user } = useAuth();
+  const profile = user?.avatarProfile;
   const [uuid, setUUID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [avatar, setAvatar] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [followup, setFollowup] = useState<string | null>(null);
   const [showReflection, setShowReflection] = useState(false);
-  const [avatarPromptVisible, setAvatarPromptVisible] = useState(false);
 
   const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8010'; //check this
 
@@ -59,24 +60,6 @@ export default function RagChatView() {
       .then(res => res.json())
       .then(data => {
         if (data?.messages?.length) setMessages(data.messages);
-      });
-  }, [uuid]);
-
-  useEffect(() => {
-    if (!uuid) return;
-  
-    fetch(`${BACKEND_URL}/persistent-memory/${uuid}`)
-      .then(res => res.json())
-      .then(data => {
-        const profile = data?.preferences?.avatar_profile;
-        if (profile?.avatar_id) {
-          setAvatar(profile.avatar_id);
-        } else {
-          setAvatarPromptVisible(true);
-        }
-      })
-      .catch(() => {
-        setAvatarPromptVisible(true);
       });
   }, [uuid]);
   
@@ -109,7 +92,8 @@ export default function RagChatView() {
         body: JSON.stringify({
           prompt: trimmed,
           uuid,
-          avatar
+          avatar: profile?.avatar_id,
+          tone: profile?.prompt_framing
         })
       });
 
@@ -151,20 +135,9 @@ export default function RagChatView() {
     }}>
       {/* Header */}
       <ChatHeader
-        avatar={avatar}
-        setAvatarPromptVisible={setAvatarPromptVisible}
+        avatar={user?.avatarProfile?.avatar_id || user?.name || null}
+        tone={user?.avatarProfile?.prompt_framing}
       />
-
-    {avatarPromptVisible && (
-      <AvatarComposer
-        uuid={uuid}
-        backendUrl={BACKEND_URL}
-        onSave={(profile) => {
-          setAvatar(profile.avatar_id);
-          setAvatarPromptVisible(false);
-        }}
-      />
-    )}
 
       {/* Messages */}
       <div style={{

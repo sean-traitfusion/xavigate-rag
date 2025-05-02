@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { H2, P1 } from '../../../ui-kit/components/shared/Typography';
-import theme from '../../../../src/ui-kit/Theme';
 import { useAuth } from '../../../context/AuthContext';
 import { UserPlan } from '../../../../src/types/Plan';
 import { Button } from '../../components/shared/Button';
