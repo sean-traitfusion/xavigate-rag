@@ -1,5 +1,5 @@
 export default function AgentFeedback({ critique, followup }: { critique?: string, followup?: string }) {
-    console.log("🧠 AgentFeedback props:", { critique, followup }); // 🪵 Debug log
+    // console.log("🧠 AgentFeedback props:", { critique, followup }); // 🪵 Debug log
     return (
       <div className="p-4 bg-white rounded-lg shadow mt-4">
         <h2 className="text-md font-semibold text-gray-700">Agent Feedback</h2>

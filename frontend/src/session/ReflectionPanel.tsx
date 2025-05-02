@@ -13,7 +13,7 @@ const getOrCreateUserUUID = () => {
 
 
 const ReflectionPanel = ({ userId }: { userId: string }) => {
-  console.log("🧠 Using userId:", userId);
+  // console.log("🧠 Using userId:", userId);
   const [prompt, setPrompt] = useState("What’s present for you today?");
   const [response, setResponse] = useState("");
   const [sessionSummary, setSessionSummary] = useState<string | null>(null);
