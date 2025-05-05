@@ -77,6 +77,7 @@ def load_user_profile(user_id: str) -> Optional[UserProfile]:
             trait_history = result["trait_history"] or {}
             return UserProfile(
                 user_id=result["uuid"],
+                name=result.get("name", "User"), # Default name if not found
                 onboarding_date=result["created_at"],
                 alignment_index_history=[],  # placeholder
                 quadrant_history=[],         # placeholder

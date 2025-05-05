@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
 from uuid import UUID
@@ -49,8 +49,11 @@ CREATE TABLE IF NOT EXISTS user_memory (
 
 class SessionMemory(BaseModel):
     uuid: UUID
-    conversation_log: Optional[Dict[str, Any]]
-    interim_scores: Optional[Dict[str, int]]
+    session_start: datetime = Field(default_factory=datetime.utcnow)
+    last_active: Optional[datetime] = None
+    conversation_log: Dict[str, Any]
+    interim_scores: Optional[Dict[str, Any]] = None
+    expires_at: Optional[datetime] = None
 
 class UserMemory(BaseModel):
     uuid: UUID
@@ -62,18 +65,29 @@ class UserMemory(BaseModel):
 
 # === ROUTES ===
 
+# Route to support frontend (adds compatibility)
 @router.post("/session-memory")
 def upsert_session(mem: SessionMemory):
-    
+    from backend.memory.routes import upsert_session_direct
+    upsert_session_direct(mem)
+    return {"status": "session memory updated"}
+
+def upsert_session_direct(mem: SessionMemory):
     now = datetime.utcnow()
     expires_at = now + timedelta(hours=24)
-    
+
+    if not mem.conversation_log:
+        print("⚠️ No conversation log to store — skipping upsert.")
+        return
+
+    # Use JSONB merge to preserve existing summary fields when updating partial conversation logs
     cursor.execute("""
         INSERT INTO session_memory (uuid, session_start, last_active, conversation_log, interim_scores, expires_at)
         VALUES (%s, %s, %s, %s, %s, %s)
         ON CONFLICT (uuid) DO UPDATE SET
             last_active = EXCLUDED.last_active,
-            conversation_log = EXCLUDED.conversation_log,
+            -- Merge existing conversation_log with new data, so partial updates (e.g., messages only) don't overwrite summaries
+            conversation_log = session_memory.conversation_log || EXCLUDED.conversation_log,
             interim_scores = EXCLUDED.interim_scores,
             expires_at = EXCLUDED.expires_at;
     """, (
@@ -81,11 +95,9 @@ def upsert_session(mem: SessionMemory):
         now,
         now,
         json.dumps(mem.conversation_log, default=str),
-        json.dumps(mem.interim_scores, default=str),
+        json.dumps(mem.interim_scores or {}, default=str),
         expires_at
     ))
-
-    return {"status": "session memory updated"}
 
 
 @router.get("/session-memory/{uuid}")

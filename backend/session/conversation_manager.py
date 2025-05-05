@@ -6,7 +6,7 @@ def route(session_state: SessionState) -> Dict:
 
     plan = {
         "next_action": "respond_with_rag",
-        "avatar_name": profile.avatar_id if profile else "Dave Chapelle",
+        "avatar_name": profile.avatar_id if profile else "wise_mentor",
         "avatar_tone": profile.prompt_framing if profile and profile.prompt_framing else "supportive coach",
         "target_goal": session_state.goal or "continue guided reflection",
         "emphasize_tags": [],

@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Query, Header, HTTPException
 from backend.memory.storage import load_user_profile
-from backend.memory.routes import upsert_session
+from backend.memory.routes import upsert_session_direct
 from backend.memory.routes import SessionMemory
 from backend.memory.models import UserMemory
 from backend.prompt_engine.engine import select_prompt
@@ -75,9 +75,9 @@ async def query(
             active_tags=plan["emphasize_tags"],
             avatar_tone=plan["avatar_tone"],
             avatar_name=plan["avatar_name"]
-        )   
-
+        )  
         filters = {}
+
         if origin:
             filters["origin"] = origin
         if topic:
@@ -91,11 +91,11 @@ async def query(
 
         return {
             "results": results,
-            "system_prompt": system_prompt,
             "quadrant": session_state.quadrant,
-            "avatar_tone": plan["avatar_tone"],
-            "tag_ids": [tag.tag_id for tag in session_state.recent_tags]
-        }
+            "tag_ids": [tag.tag_id for tag in session_state.recent_tags],
+            "memory_intro": memory_intro 
+       } 
+
     except Exception as e:
         return {"error": str(e)}
 
@@ -107,6 +107,7 @@ class PromptRequest(BaseModel):
     audience: Optional[str] = None
     avatar: Optional[str] = None
     uuid: Optional[str] = None
+    voice: Optional[str] = None
 
 @router.post("/generate")
 async def generate_answer(
@@ -136,6 +137,18 @@ async def generate_answer(
     # 🔍 Load alignment profile from file-based memory
     user_profile = load_user_profile(body.uuid) if body.uuid else None
 
+    # Set avatar profile
+    from backend.avatars.templates import AVATAR_PRESETS
+
+    if body.avatar and body.avatar in AVATAR_PRESETS:
+        avatar_profile = AVATAR_PRESETS[body.avatar]
+    else:
+        avatar_profile = user_profile.avatar_profile if user_profile else None
+ 
+    # Optionally override prompt_framing with voice description
+    if avatar_profile and body.voice:
+        avatar_profile["prompt_framing"] = body.voice
+
     from backend.memory.storage import load_session_history
 
     if not user_profile:
@@ -150,11 +163,12 @@ async def generate_answer(
         ax=user_profile.baseline_ax if user_profile else None,
         aq=user_profile.baseline_aq if user_profile else None,
         quadrant=user_profile.quadrant_history[-1] if user_profile and user_profile.quadrant_history else "QII",
-        avatar_profile=user_profile.avatar_profile if user_profile else None,
+        avatar_profile=avatar_profile,
         recent_tags=user_profile.alignment_tags if user_profile else [],
         history=history,
         goal=None
     )
+
     from backend.agents.goal_setter import suggest_goal_from_context
 
     if not session_state.goal:
@@ -163,6 +177,21 @@ async def generate_answer(
         print(f"🎯 Inferred session goal: {inferred_goal}")
         plan = conversation_route(session_state)
 
+    # === TAG TIMELINE DIFFING ===
+    previous_tags = set(tag.tag_id for tag in session_state.recent_tags)
+    current_tags = set(plan.get("emphasize_tags", []))
+
+    new_tags = list(current_tags - previous_tags)
+    removed_tags = list(previous_tags - current_tags)
+
+    tag_timeline_entry = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "active_tags": list(current_tags),
+        "new_tags": new_tags,
+        "removed_tags": removed_tags,
+        "goal": session_state.goal
+    }
+
     # 🎯 Tone + prompt shaping
     system_prompt = select_prompt(
         quadrant=session_state.quadrant,
@@ -170,6 +199,24 @@ async def generate_answer(
         avatar_tone=plan["avatar_tone"],
         avatar_name=plan["avatar_name"]
     )
+
+    # 🧠 Memory summary
+    memory_intro = ""
+    if persistent_memory:
+        personality_scores = persistent_memory[0]
+        preferences = persistent_memory[1] or {}
+        if personality_scores:
+            memory_intro += "The user has the following personality trait scores:\n"
+            for trait, score in personality_scores.items():
+                memory_intro += f"- {trait}: {score}\n"
+
+    if session_memory:
+        conversation_log = session_memory[0]
+        interim_scores = session_memory[1]
+        if interim_scores:
+            memory_intro += "\nThe assistant has inferred these interim observations:\n"
+            for key, value in interim_scores.items():
+                memory_intro += f"- {key}: {value}\n"
 
     # 🧠 Optional comment injection
     comment_on = plan.get("comment_on")
@@ -196,31 +243,27 @@ async def generate_answer(
     for r in results:
         print(r)
 
-    # 🧠 Memory summary
-    memory_intro = ""
-    if persistent_memory:
-        personality_scores = persistent_memory[0]
-        preferences = persistent_memory[1] or {}
-        if personality_scores:
-            memory_intro += "The user has the following personality trait scores:\n"
-            for trait, score in personality_scores.items():
-                memory_intro += f"- {trait}: {score}\n"
-
-    if session_memory:
-        conversation_log = session_memory[0]
-        interim_scores = session_memory[1]
-        if interim_scores:
-            memory_intro += "\nThe assistant has inferred these interim observations:\n"
-            for key, value in interim_scores.items():
-                memory_intro += f"- {key}: {value}\n"
-
     import requests
 
+    print("🎭 Avatar Profile:", session_state.avatar_profile)
+    print("📌 Final plan:", json.dumps(plan, indent=2, default=str))
+    print("🧠 Memory Intro Summary:\n", memory_intro)
+    print("📝 System Prompt:\n", system_prompt)
+
+    chat_history = ""
+    for exchange in session_state.history[-5:]:  # limit for brevity
+        chat_history += f"User: {exchange.user_prompt}\n"
+        chat_history += f"Assistant: {exchange.assistant_response}\n"
+
     final_prompt = f"""
+
 {system_prompt}
 
-if session_state.goal:
-    memory_intro = f"Session goal: {session_state.goal}\n\n" + memory_intro
+{chat_history}
+
+
+{f"Session goal: {session_state.goal}" if session_state.goal else ""}
+{memory_intro}
 
 Use the context and what you know about the user to answer clearly and with care.
 
@@ -275,6 +318,9 @@ Answer:
         # 🧠 Synthesize persistent memory update
         try:
             user_memory = synthesize_persistent_update(UUID(body.uuid), plan, critique)
+            user_memory.avatar_profile = avatar_profile
+            synthesized_summary = user_memory.model_dump(exclude_none=True)
+            conversation_log["synthesized_persistent_update"] = synthesized_summary
             print("📥 Synthesized persistent memory update:")
             print(json.dumps(user_memory.model_dump(), indent=2, default=str))
 
@@ -315,18 +361,46 @@ Answer:
             "assistant_response": answer,
             "tags": plan["emphasize_tags"]
         })
-        conversation_log = {
-            "exchanges": prior_exchanges,
-            "plan_snapshot": plan
-        }
-        
-        upsert_session(
-            SessionMemory(
-                uuid=UUID(body.uuid),
-                conversation_log=conversation_log,
-                interim_scores={}  # or extract from your inference logic later
-            )
+
+        conversation_log = {}
+        conversation_log["exchanges"] = prior_exchanges
+        conversation_log["plan_snapshot"] = plan
+        conversation_log["system_prompt"] = system_prompt
+        conversation_log["final_prompt"] = final_prompt
+        conversation_log["critique"] = (
+            critique.model_dump() if hasattr(critique, "model_dump") else critique
         )
+        conversation_log["followup"] = (
+            followup.model_dump() if hasattr(followup, "model_dump") else followup
+        )
+
+        conversation_log["goal_setter"] = (
+            session_state.goal.model_dump()
+            if hasattr(session_state.goal, "model_dump")
+            else session_state.goal
+        )
+        conversation_log["active_tags"] = plan.get("emphasize_tags", [])
+        conversation_log["recent_tags"] = [tag.tag_id for tag in session_state.recent_tags]
+        conversation_log["tag_timeline"] = tag_timeline_entry
+        conversation_log["avatar_profile"] = (
+            session_state.avatar_profile.model_dump()
+            if hasattr(session_state.avatar_profile, "model_dump")
+            else session_state.avatar_profile
+        )
+        conversation_log["synthesized_persistent_update"] = user_memory.model_dump(exclude_none=True)
+        
+
+        session_mem = SessionMemory(
+            uuid=UUID(body.uuid),
+            session_start=datetime.utcnow(),
+            conversation_log=conversation_log,
+            interim_scores={}  # or include inference-based scores later
+        )
+
+        upsert_session_direct(session_mem) # ✅ saves directly
+
+        print("🚀 Upserting session memory with UUID:", body.uuid)
+        print("📄 Conversation Log Keys:", list(conversation_log.keys()))
         print("🧠 Conversation log saved:")
         print(json.dumps(conversation_log, indent=2, default=str))
 
@@ -342,6 +416,7 @@ Answer:
         return {"error": str(e)}
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from threading import Thread
 import time
 from backend.memory.storage import purge_expired_session_memory
@@ -360,6 +435,13 @@ async def lifespan(app: FastAPI):
     yield  # startup complete
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(router)
 
 if __name__ == "__main__":

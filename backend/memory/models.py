@@ -1,5 +1,5 @@
 # backend/memory/models.py
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 from pydantic import BaseModel
 from uuid import UUID
 from datetime import datetime
@@ -18,9 +18,11 @@ class AlignmentTag(BaseModel):
 
 class AvatarProfile(BaseModel):
     avatar_id: str
+    name: str
+    tone: str
     shaping_sources: List[str]
-    tone_matrix: Dict[str, float]  # e.g., {"tone_baseline": 0.75, "pacing": 0.5, ...}
-    modulation_bounds: Dict[str, float]  # e.g., min/max ranges for tone/pacing
+    tone_matrix: Dict[str, float]
+    modulation_bounds: Dict[str, Union[float, List[float]]]
     metaphor_lens: Optional[str]
     vocabulary_style: Optional[str]
     prompt_framing: Optional[str]
@@ -71,5 +73,6 @@ class UserMemory(BaseModel):
     score_explanations: Optional[Dict[str, str]] = None
     trait_history: Optional[Dict[str, list]] = None
     preferences: Optional[Dict[str, str]] = None
+    avatar_profile: Optional[AvatarProfile] = None
     created_at: Optional[datetime] = None
     last_updated: Optional[datetime] = None
