@@ -1,25 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Flame } from 'lucide-react';
-
 import SignIn from './ui-kit/components/account/SignIn';
 import Sidebar from './ui-kit/components/layout/Sidebar';
-import MobileHeader from './ui-kit/components/layout/MobileHeader';
-import HomeView from './ui-kit/components/home/GetToKnowYouView';
 import ChatView from './ui-kit/components/chat/RagChatView';
-import ReflectView from './ui-kit/components/reflect/ReflectView';
+import MNProfileView from './ui-kit/components/reflect/MNProfileView';
 import AvatarComposer from './ui-kit/components/avatar/AvatarComposer';
-import PlanView from './ui-kit/components/plan/PlanView';
-import AccountView from './ui-kit/components/account/AccountView';
-import PlaygroundView from './ui-kit/components/dev/PlaygroundView';
+import MNTestForm from './ui-kit/components/mntest/MNTestForm';
 
 function AppContent() {
-  console.log("🚀 XavigateApp loaded");
-
   const [userName, setUserName] = useState<string | null>(() => localStorage.getItem('xavigate_user'));
-  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [activeView, setActiveView] = useState<string>('playground');
+  const [activeView, setActiveView] = useState<string>('chat');
+  const [traitScores, setTraitScores] = useState<Record<string, number> | null | undefined>(undefined);
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,22 +24,97 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if (activeView === 'mnProfile' && userName) {
+      const safeName = userName.toLowerCase().trim();
+      console.log("🔍 Fetching profile for:", safeName);
+
+      fetch(`http://localhost:8010/api/user/${safeName}`)
+        .then(async (res) => {
+          const text = await res.text();
+          console.log("📦 Raw response text:", text);
+
+          try {
+            const data = JSON.parse(text);
+            console.log("🧠 Parsed user data:", data);
+
+            if (data?.traitScores && Object.keys(data.traitScores).length > 0) {
+              console.log("✅ Valid traitScores found");
+              setTraitScores(data.traitScores);
+            } else {
+              console.warn("⚠️ traitScores missing or empty:", data);
+              setTraitScores(null);
+            }
+          } catch (err) {
+            console.error("❌ Failed to parse JSON:", err);
+            setTraitScores(null);
+          }
+        })
+        .catch((err) => {
+          console.error("❌ Fetch error:", err);
+          setTraitScores(null);
+        });
+    }
+  }, [activeView, userName]);
+
   const handleSignIn = (name: string) => {
-    setUserName(name);
-    localStorage.setItem('xavigate_user', name);
+    const cleanName = name.trim().toLowerCase();
+    setUserName(cleanName);
+    localStorage.setItem('xavigate_user', cleanName);
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem('xavigate_user');
+    setUserName(null);
+    setTraitScores(undefined);
+  };
 
   const renderView = () => {
     switch (activeView) {
-      case 'getToKnowYou':
-        return <HomeView onNavigate={setActiveView} />;
       case 'chat':
         return <ChatView />;
-      case 'reflect':
-        return <ReflectView />;
-      case 'plan':
-        return <PlanView />;
+
+      case 'mnProfile':
+        if (traitScores === undefined) {
+          return <p className="text-gray-500">🔄 Loading your MN Profile...</p>;
+        }
+
+        if (traitScores === null) {
+          return (
+            <MNTestForm
+              userName={userName!}
+              onComplete={(answers) => {
+                fetch(`http://localhost:8010/api/user/${userName!}`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    user: userName,
+                    testCompleted: true,
+                    traitScores: answers,
+                  }),
+                })
+                  .then((res) => res.json())
+                  .then((res) => {
+                    console.log("✅ Saved to backend:", res);
+                    setTraitScores(answers);
+                  })
+                  .catch((err) => {
+                    console.error("❌ Failed to save:", err);
+                    setTraitScores(answers);
+                  });
+              }}
+            />
+          );
+        }
+
+        console.log("✅ Rendering MNProfileView for", userName, traitScores);
+        return (
+          <MNProfileView
+            traitScores={traitScores}
+            onAskGPT={(prompt) => console.log('ask:', prompt)}
+          />
+        );
+
       case 'avatar':
         return (
           <AvatarComposer
@@ -56,20 +123,7 @@ function AppContent() {
             onSave={(profile) => console.log('✅ Avatar saved:', profile)}
           />
         );
-      case 'account':
-        return <AccountView />;
-      case 'tailwindTest':
-        return (
-          <div className="p-6 text-center">
-            <div className="bg-red-500 text-white p-4 rounded-lg shadow text-lg">
-              ✅ Tailwind is working inside XavigateApp!
-            </div>
-            <Flame className="w-10 h-10 text-orange-500 mt-4 mx-auto" />
-            <p className="text-gray-500 mt-2">Lucide is working too.</p>
-          </div>
-        );
-      case 'playground':
-        return <PlaygroundView />;
+
       default:
         return <div><h1>Unknown View</h1></div>;
     }
@@ -78,25 +132,19 @@ function AppContent() {
   if (!userName) {
     return <SignIn onSubmit={handleSignIn} />;
   }
-  
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="flex h-screen overflow-hidden">
       <Sidebar
         userName={userName}
-        setActiveView={(view: string) => {
-          setActiveView(view);
-          if (isMobile) setSidebarOpen(false);
-        }}
+        setActiveView={setActiveView}
+        activeView={activeView}
+        onSignOut={handleSignOut}
         isVisible={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        activeView={activeView}
       />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        <MobileHeader onToggle={() => isMobile && setSidebarOpen(prev => !prev)} />
-        <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
-          {renderView()}
-        </div>
+      <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
+        {renderView()}
       </div>
     </div>
   );

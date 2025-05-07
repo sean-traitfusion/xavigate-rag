@@ -21,7 +21,9 @@ export default function SignIn({ onSubmit }: SignInProps) {
         className="bg-white shadow-xl rounded-lg p-8 max-w-sm w-full space-y-6"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">What’s Your Username?</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            What’s Your Username?
+          </h1>
           <input
             type="text"
             value={name}
@@ -38,9 +40,19 @@ export default function SignIn({ onSubmit }: SignInProps) {
           Continue
         </button>
 
-        <p className="text-sm text-center text-gray-500">
-          New user? Just enter your name to get started.
-        </p>
+        <div className="text-center pt-4 border-t border-gray-200">
+          <p className="text-sm text-gray-600">
+            New user?{' '}
+            <a
+              href="/new-user"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 hover:underline"
+            >
+              Create account
+            </a>
+          </p>
+        </div>
       </form>
     </div>
   );

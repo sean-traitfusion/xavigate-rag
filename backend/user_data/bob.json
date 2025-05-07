@@ -1,0 +1,25 @@
+{
+  "user": "bob",
+  "testCompleted": true,
+  "traitScores": {
+    "Gross Bodily": 6.4,
+    "Fine Bodily": 3.8,
+    "Interpersonal": 7.0,
+    "Logical": 8.2,
+    "Linguistic": 4.6,
+    "Graphic Visual": 6.0,
+    "Spatial Visual": 9.2,
+    "Musical": 3.4,
+    "Intrapersonal": 8.6,
+    "Naturalistic": 5.0,
+    "Protective": 4.0,
+    "Educative": 7.6,
+    "Administrative": 6.2,
+    "Creative": 9.0,
+    "Healing": 5.8,
+    "Entertaining": 7.2,
+    "Providing": 3.6,
+    "Entrepreneurial": 6.8,
+    "Adventurous": 8.0
+  }
+}

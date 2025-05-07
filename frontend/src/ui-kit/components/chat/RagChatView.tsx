@@ -48,7 +48,7 @@ export default function RagChatView() {
   const [followup, setFollowup] = useState<string | null>(null);
   const [showReflection, setShowReflection] = useState(false);
 
-  const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8010'; //check this
+  const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:8010';
 
   useEffect(() => {
     setUUID(getOrCreateUserUUID());
@@ -62,7 +62,6 @@ export default function RagChatView() {
         if (data?.messages?.length) setMessages(data.messages);
       });
   }, [uuid]);
-  
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -125,61 +124,30 @@ export default function RagChatView() {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      background: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 0 10px rgba(0,0,0,0.05)'
-    }}>
-      {/* Header */}
+    <div className="flex flex-col h-full bg-white rounded shadow">
       <ChatHeader
         avatar={user?.avatarProfile?.avatar_id || user?.name || null}
         tone={user?.avatarProfile?.prompt_framing}
       />
 
-      {/* Messages */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '1rem',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col">
         <MessageList messages={messages} bottomRef={messagesEndRef} />
 
         {isTyping && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: '#ccc',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>🤖</div>
-            <div style={{
-              backgroundColor: '#f4f4f4',
-              padding: '0.75rem',
-              borderRadius: '8px',
-              display: 'flex',
-              gap: '4px',
-              alignItems: 'center',
-              fontSize: '1.25rem'
-            }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#666', animation: 'blink 1s infinite alternate', animationDelay: '0s' }} />
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#666', animation: 'blink 1s infinite alternate', animationDelay: '0.2s' }} />
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#666', animation: 'blink 1s infinite alternate', animationDelay: '0.4s' }} />
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+              🤖
+            </div>
+            <div className="bg-gray-100 px-3 py-2 rounded flex gap-1 items-center text-lg">
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-600 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-600 animate-pulse delay-200" />
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-600 animate-pulse delay-400" />
             </div>
           </div>
         )}
-
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
       <ChatInput
         input={input}
         setInput={setInput}
@@ -187,30 +155,6 @@ export default function RagChatView() {
         followup={followup}
         setShowReflection={setShowReflection}
       />
-      <form onSubmit={sendMessage} style={{ display: 'flex', gap: '0.5rem', padding: '1rem' }}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          style={{
-            flex: 1,
-            padding: '0.5rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px'
-          }}
-        />
-        <button type="submit" style={{
-          padding: '0.5rem 1rem',
-          border: 'none',
-          background: '#1976d2',
-          color: '#fff',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>
-          Send
-        </button>
-      </form>
     </div>
   );
 }

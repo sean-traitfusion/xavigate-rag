@@ -1,10 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import XavigateApp from './XavigateApp'; 
 import './index.css';
+import XavigateApp from './XavigateApp';
+import { AuthProvider } from './context/AuthContext';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+root.render(
   <React.StrictMode>
-    <XavigateApp />
+    <AuthProvider>
+      <XavigateApp />
+    </AuthProvider>
   </React.StrictMode>
 );
