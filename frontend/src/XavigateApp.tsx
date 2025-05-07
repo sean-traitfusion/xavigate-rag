@@ -8,26 +8,25 @@ import MNTestForm from './ui-kit/components/mntest/MNTestForm';
 
 function AppContent() {
   const [userName, setUserName] = useState<string | null>(() => localStorage.getItem('xavigate_user'));
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [activeView, setActiveView] = useState<string>('chat');
   const [traitScores, setTraitScores] = useState<Record<string, number> | null | undefined>(undefined);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      setSidebarOpen(!mobile);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const handleSignIn = (name: string) => {
+    const cleanName = name.trim().toLowerCase();
+    setUserName(cleanName);
+    localStorage.setItem('xavigate_user', cleanName);
+  };
 
+  const handleSignOut = () => {
+    localStorage.removeItem('xavigate_user');
+    setUserName(null);
+    setTraitScores(undefined);
+  };
+
+  // ✅ Fetch trait scores when entering MN Profile
   useEffect(() => {
     if (activeView === 'mnProfile' && userName) {
       const safeName = userName.toLowerCase().trim();
-
       fetch(`http://localhost:8010/api/user/${safeName}`)
         .then(async (res) => {
           const text = await res.text();
@@ -42,23 +41,9 @@ function AppContent() {
             setTraitScores(null);
           }
         })
-        .catch(() => {
-          setTraitScores(null);
-        });
+        .catch(() => setTraitScores(null));
     }
   }, [activeView, userName]);
-
-  const handleSignIn = (name: string) => {
-    const cleanName = name.trim().toLowerCase();
-    setUserName(cleanName);
-    localStorage.setItem('xavigate_user', cleanName);
-  };
-
-  const handleSignOut = () => {
-    localStorage.removeItem('xavigate_user');
-    setUserName(null);
-    setTraitScores(undefined);
-  };
 
   const renderView = () => {
     switch (activeView) {
@@ -83,12 +68,8 @@ function AppContent() {
                   }),
                 })
                   .then((res) => res.json())
-                  .then(() => {
-                    setTraitScores(answers);
-                  })
-                  .catch(() => {
-                    setTraitScores(answers);
-                  });
+                  .then(() => setTraitScores(answers))
+                  .catch(() => setTraitScores(answers));
               }}
             />
           );
@@ -102,8 +83,8 @@ function AppContent() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: prompt }),
               })
-                .then(res => res.json())
-                .then(data => {
+                .then((res) => res.json())
+                .then((data) => {
                   alert("AI says:\n\n" + data.reply);
                 });
             }}
@@ -127,35 +108,22 @@ function AppContent() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden relative">
-      {/* Mobile hamburger button */}
-      {isMobile && !sidebarOpen && (
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="fixed top-4 left-4 z-50 bg-white shadow p-2 rounded-md border border-gray-200"
-        >
-          <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      )}
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* ✅ Static Sidebar (always on left) */}
+      <div className="w-64 h-full border-r bg-white shadow z-10">
+        <Sidebar
+          userName={userName}
+          setActiveView={setActiveView}
+          activeView={activeView}
+          onSignOut={handleSignOut}
+          isVisible={true}
+        />
+      </div>
 
-      {/* Sidebar */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 md:static md:z-10 bg-black/30 md:bg-transparent">
-          <Sidebar
-            userName={userName}
-            setActiveView={setActiveView}
-            activeView={activeView}
-            onSignOut={handleSignOut}
-            isVisible={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-          />
-        </div>
-      )}
-
-      {/* Main content */}
-      <div className="flex-1 overflow-y-auto p-8 bg-gray-50 z-0">{renderView()}</div>
+      {/* ✅ Main content */}
+      <div className="flex-1 overflow-y-auto p-8">
+        {renderView()}
+      </div>
     </div>
   );
 }

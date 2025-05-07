@@ -1,4 +1,11 @@
-import { User, LogOut, MessageSquare, BarChart2, SmilePlus, X } from 'lucide-react';
+import {
+  MessageSquare,
+  BarChart2,
+  SmilePlus,
+  User,
+  LogOut,
+  X
+} from 'lucide-react';
 
 interface SidebarProps {
   userName: string | null;
@@ -21,15 +28,18 @@ export default function Sidebar({
   setActiveView,
   activeView,
   onClose,
-  isVisible,
+  isVisible
 }: SidebarProps) {
   return (
-    <div className="relative h-full w-64 bg-gray-100 p-6 flex flex-col justify-between border-r shadow z-50">
+    <div
+      className="h-full w-64 bg-gray-100 p-6 flex flex-col justify-between border-r shadow fixed z-50"
+      style={{ top: 0, left: 0 }}
+    >
       {/* ❌ Mobile close button */}
-      {isVisible && onClose && (
+      {onClose && (
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-red-600 md:hidden"
+          className="absolute top-4 right-4 text-gray-500 hover:text-red-600"
         >
           <X size={20} />
         </button>
@@ -43,7 +53,7 @@ export default function Sidebar({
               key={view}
               onClick={() => {
                 setActiveView(view);
-                if (isVisible && onClose) onClose();
+                if (onClose) onClose(); // close sidebar on any click
               }}
               className={`flex items-center gap-3 px-4 py-2 rounded cursor-pointer transition ${
                 view === activeView
@@ -52,7 +62,7 @@ export default function Sidebar({
               }`}
             >
               {icon}
-              {label}
+              <span>{label}</span>
             </li>
           ))}
         </ul>

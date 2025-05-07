@@ -1,24 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
 import { useAuth } from '../../../context/AuthContext';
-
-type Source = {
-  term?: string;
-  id?: string;
-  metadata?: {
-    term?: string;
-    [key: string]: any;
-  };
-};
 
 type Message = {
   sender: 'user' | 'assistant';
   text: string;
   timestamp?: string;
-  sources?: Source[];
-  followup?: string;
 };
 
 function getTimestamp() {
@@ -43,7 +31,6 @@ export default function RagChatView() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [followup, setFollowup] = useState<string | null>(null);
   const [showReflection, setShowReflection] = useState(false);
 
@@ -53,7 +40,6 @@ export default function RagChatView() {
     setUUID(getOrCreateUserUUID());
   }, []);
 
-  // ✅ Rehydrate messages when user or component reloads
   useEffect(() => {
     const saved = sessionStorage.getItem("xavigate_chat");
     if (saved) {
@@ -117,8 +103,6 @@ export default function RagChatView() {
       const assistantMessage: Message = {
         sender: 'assistant',
         text: data.answer || "⚠️ No response received from AI.",
-        sources: data.sources || [],
-        followup: data.followup || null,
         timestamp: getTimestamp()
       };
 
@@ -155,32 +139,27 @@ export default function RagChatView() {
         tone={profile?.prompt_framing}
       />
 
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-            <div
-              className={`max-w-xl px-4 py-3 rounded-lg leading-relaxed text-base ${
-                msg.sender === "user"
-                  ? "bg-indigo-100 text-indigo-900 text-right"
-                  : "bg-gray-100 text-gray-800 text-left"
-              }`}
-            >
-              {msg.text}
-            </div>
+          <div key={i}>
+            {msg.sender === "user" ? (
+              <div className="flex justify-end">
+                <div className="bg-indigo-100 text-indigo-900 text-[1rem] leading-[1.8] px-4 py-2 rounded-lg max-w-[60ch]">
+                  {msg.text}
+                </div>
+              </div>
+            ) : (
+              <div className="text-[1.125rem] leading-[1.9] max-w-[60ch] text-gray-900 mx-auto px-4">
+                {msg.text.split('\n\n').map((para, idx) => (
+                  <p key={idx} className="mb-6">{para}</p>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 
         {isTyping && (
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-              🤖
-            </div>
-            <div className="bg-gray-100 px-3 py-2 rounded flex gap-1 items-center text-lg">
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-600 animate-pulse" />
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-600 animate-pulse delay-200" />
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-600 animate-pulse delay-400" />
-            </div>
-          </div>
+          <div className="text-base text-gray-500">AI is typing...</div>
         )}
         <div ref={bottomRef} />
       </div>
