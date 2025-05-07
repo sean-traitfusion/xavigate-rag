@@ -1,5 +1,6 @@
 import { Button } from '../shared/Button';
 import { useAuth } from '../../../context/AuthContext';
+import { Bot } from 'lucide-react';
 
 type ChatHeaderProps = {
   avatar: string | null;
@@ -8,36 +9,24 @@ type ChatHeaderProps = {
 
 export default function ChatHeader({ avatar, tone }: ChatHeaderProps) {
   return (
-    <div
-      style={{
-        padding: '1rem',
-        borderBottom: '1px solid #eee',
-        backgroundColor: '#fafafa',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}
-    >
+    <div className="flex items-center justify-between py-4 px-6 border-b bg-gray-50 pl-14 md:pl-6">
       <div>
-        <h2 style={{ margin: 0, fontSize: '1.25rem' }}>
-          🤖 Xavigate Assistant
+        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-800 mb-1">
+          <Bot size={20} /> Xavigate Assistant
         </h2>
         {avatar && (
-          <p style={{ margin: 0, fontSize: '0.875rem', color: '#666' }}>
-          Chatting with: <strong>{avatar}</strong>
-        </p>
-      )}
-      {tone && (
-        <p style={{ margin: 0, fontSize: '0.75rem', color: '#999' }}>
-        Speaking as: <em>{tone}</em>
-      </p>
-)}
+          <p className="text-sm text-gray-600">
+            Chatting with: <strong>{avatar}</strong>
+          </p>
+        )}
+        {tone && (
+          <p className="text-xs text-gray-400">
+            Speaking as: <em>{tone}</em>
+          </p>
+        )}
       </div>
 
-      <Button
-        variant="ghost"
-        style={{ fontSize: '0.75rem' }}
-      >
+      <Button variant="ghost" className="text-sm text-pink-600 hover:text-pink-800">
         Change
       </Button>
     </div>

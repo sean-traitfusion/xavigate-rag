@@ -27,31 +27,22 @@ function AppContent() {
   useEffect(() => {
     if (activeView === 'mnProfile' && userName) {
       const safeName = userName.toLowerCase().trim();
-      console.log("🔍 Fetching profile for:", safeName);
 
       fetch(`http://localhost:8010/api/user/${safeName}`)
         .then(async (res) => {
           const text = await res.text();
-          console.log("📦 Raw response text:", text);
-
           try {
             const data = JSON.parse(text);
-            console.log("🧠 Parsed user data:", data);
-
             if (data?.traitScores && Object.keys(data.traitScores).length > 0) {
-              console.log("✅ Valid traitScores found");
               setTraitScores(data.traitScores);
             } else {
-              console.warn("⚠️ traitScores missing or empty:", data);
               setTraitScores(null);
             }
-          } catch (err) {
-            console.error("❌ Failed to parse JSON:", err);
+          } catch {
             setTraitScores(null);
           }
         })
-        .catch((err) => {
-          console.error("❌ Fetch error:", err);
+        .catch(() => {
           setTraitScores(null);
         });
     }
@@ -73,12 +64,10 @@ function AppContent() {
     switch (activeView) {
       case 'chat':
         return <ChatView />;
-
       case 'mnProfile':
         if (traitScores === undefined) {
           return <p className="text-gray-500">🔄 Loading your MN Profile...</p>;
         }
-
         if (traitScores === null) {
           return (
             <MNTestForm
@@ -94,40 +83,32 @@ function AppContent() {
                   }),
                 })
                   .then((res) => res.json())
-                  .then((res) => {
-                    console.log("✅ Saved to backend:", res);
+                  .then(() => {
                     setTraitScores(answers);
                   })
-                  .catch((err) => {
-                    console.error("❌ Failed to save:", err);
+                  .catch(() => {
                     setTraitScores(answers);
                   });
               }}
             />
           );
         }
-
         return (
           <MNProfileView
             traitScores={traitScores}
             onAskGPT={(prompt) => {
-              fetch("http://localhost:8010/chat", {
+              fetch("http://localhost:8010/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: prompt }),
               })
-                .then((res) => res.json())
-                .then((data) => {
+                .then(res => res.json())
+                .then(data => {
                   alert("AI says:\n\n" + data.reply);
-                })
-                .catch((err) => {
-                  console.error("❌ AI chat failed:", err);
-                  alert("⚠️ Could not get AI response.");
                 });
             }}
           />
         );
-
       case 'avatar':
         return (
           <AvatarComposer
@@ -136,7 +117,6 @@ function AppContent() {
             onSave={(profile) => console.log('✅ Avatar saved:', profile)}
           />
         );
-
       default:
         return <div><h1>Unknown View</h1></div>;
     }
@@ -147,18 +127,35 @@ function AppContent() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar
-        userName={userName}
-        setActiveView={setActiveView}
-        activeView={activeView}
-        onSignOut={handleSignOut}
-        isVisible={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-      <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
-        {renderView()}
-      </div>
+    <div className="flex h-screen overflow-hidden relative">
+      {/* Mobile hamburger button */}
+      {isMobile && !sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="fixed top-4 left-4 z-50 bg-white shadow p-2 rounded-md border border-gray-200"
+        >
+          <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      )}
+
+      {/* Sidebar */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 md:static md:z-10 bg-black/30 md:bg-transparent">
+          <Sidebar
+            userName={userName}
+            setActiveView={setActiveView}
+            activeView={activeView}
+            onSignOut={handleSignOut}
+            isVisible={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+        </div>
+      )}
+
+      {/* Main content */}
+      <div className="flex-1 overflow-y-auto p-8 bg-gray-50 z-0">{renderView()}</div>
     </div>
   );
 }
