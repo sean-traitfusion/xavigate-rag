@@ -3,6 +3,18 @@ import { useAuth } from '../../../context/AuthContext';
 import LanguageSelector from '../shared/LanguageSelector';
 import PlanPreview from '../sidebar/PlanPreview';
 
+import {
+  User,
+  MessageSquare,
+  Mirror,
+  Map,
+  LineChart,
+  BarChart2,
+  SmilePlus,
+  Puzzle,
+  Settings,
+  FlaskConical
+} from 'lucide-react';
 
 interface SidebarProps {
   setActiveView: (view: string) => void;
@@ -12,15 +24,16 @@ interface SidebarProps {
 }
 
 const navItems = [
-  ["🧠 About You", "getToKnowYou"],
-  ["💬 Chat", "chat"],
-  ["🪞 Reflect", "reflect"],
-  ["🧭 Plan", "plan"],
-  ["📊 Insights", "insights"],
-  ["📈 Metrics", "metrics"],
-  ["🎭 Avatar Composer", "avatar"],
-  ["🧩 Modules", "modules"],
-  ["👤 My Account", "account"],
+  { label: "About You", view: "getToKnowYou", icon: User },
+  { label: "Chat", view: "chat", icon: MessageSquare },
+  { label: "Reflect", view: "reflect", icon: Mirror },
+  { label: "Plan", view: "plan", icon: Map },
+  { label: "Insights", view: "insights", icon: LineChart },
+  { label: "Metrics", view: "metrics", icon: BarChart2 },
+  { label: "Avatar Composer", view: "avatar", icon: SmilePlus },
+  { label: "Modules", view: "modules", icon: Puzzle },
+  { label: "My Account", view: "account", icon: Settings },
+  { label: "Playground", view: "playground", icon: FlaskConical }
 ];
 
 export default function Sidebar({
@@ -66,7 +79,7 @@ export default function Sidebar({
         <h3>Xavigate</h3>
 
         <ul style={{ listStyle: "none", padding: 0 }}>
-          {navItems.map(([label, view]) => (
+          {navItems.map(({ label, view, icon: Icon }) => (
             <li
               key={view}
               onClick={() => {
@@ -74,6 +87,9 @@ export default function Sidebar({
                 if (isMobile) onClose();
               }}
               style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
                 marginBottom: "0.75rem",
                 cursor: "pointer",
                 fontWeight: view === activeView ? 600 : 400,
@@ -83,7 +99,8 @@ export default function Sidebar({
                 borderRadius: "6px",
               }}
             >
-              {label}
+              <Icon size={18} />
+              <span>{label}</span>
             </li>
           ))}
         </ul>

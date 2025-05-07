@@ -1,7 +1,10 @@
+version: '3.8'
 
 services:
   rag-api:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     entrypoint: ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8010"]
@@ -13,6 +16,7 @@ services:
       POSTGRES_HOST: postgres
     volumes:
       - .:/app
+
   postgres:
     image: ankane/pgvector
     container_name: xavigate_postgres
@@ -29,12 +33,11 @@ services:
   chroma:
     image: chromadb/chroma
     container_name: xavigate_chroma
-   # ports:
-   #   - "8000:8000"
+    ports:
+      - "8000:8000"
     volumes:
       - chroma_data:/chroma/chroma
 
-  # Optional: Jupyter for exploration
   jupyter:
     image: jupyter/base-notebook
     container_name: xavigate_jupyter

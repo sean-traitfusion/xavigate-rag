@@ -1,6 +1,9 @@
-from backend.session.session_state import SessionState
-from openai import OpenAI
 import os
+from dotenv import load_dotenv
+from openai import OpenAI
+from backend.session.session_state import SessionState
+
+load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -11,7 +14,7 @@ def suggest_goal_from_context(prompt: str, session_state: SessionState) -> str:
 
     history_snippets = "\n".join([
         f"User: {e.user_prompt}\nAssistant: {e.assistant_response}"
-        for e in session_state.history[-3:]  # last 3 for brevity
+        for e in session_state.history[-3:]  # Last 3 exchanges
     ]) or "No prior exchanges."
 
     tag_list = ", ".join([t.tag_id for t in session_state.recent_tags]) or "None"

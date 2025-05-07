@@ -3,7 +3,6 @@ python-dotenv
 langchain
 tiktoken
 chromadb
-python-dotenv
 openai
 fastapi
 uvicorn[standard]

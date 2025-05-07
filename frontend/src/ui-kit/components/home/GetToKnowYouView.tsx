@@ -1,4 +1,3 @@
-// frontend/src/ui-kit/components/home/GetToKnowYouView.tsx
 import React, { useEffect, useState } from 'react';
 import OnboardingWizard from '../../../onboarding/OnboardingWizard';
 import { useAuth } from '../../../context/AuthContext';
@@ -23,17 +22,20 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
   const userId = getUUID();
 
   const fetchProfile = async () => {
-    const res = await fetch(`${API_URL}/api/onboarding/status?user_id=${userId}`);
-    const json = await res.json();
-    setIsUnlocked(json.unlocked);
-    setTraitThemes(json.trait_themes || {});
+    try {
+      const res = await fetch(`${API_URL}/api/onboarding/status?user_id=${userId}`);
+      const json = await res.json();
+      setIsUnlocked(json.unlocked);
+      setTraitThemes(json.trait_themes || {});
+    } catch (err) {
+      console.error("Failed to fetch onboarding status:", err);
+    }
   };
 
   useEffect(() => {
     fetchProfile();
   }, [userId]);
 
-  // Track and greet returning users
   useEffect(() => {
     if (isUnlocked) {
       const last = localStorage.getItem('lastVisit');
@@ -52,20 +54,15 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
         <div className="mb-6 p-4 bg-blue-50 rounded text-gray-800">
           <p>Hi {user.name}, welcome back!</p>
           <div className="mt-2 space-x-2">
-            <button
-              className="btn"
-              onClick={() => onNavigate?.('reflect')}
-            >
+            <button className="btn" onClick={() => onNavigate?.('reflect')}>
               💭 Reflect
             </button>
             <button
               className="btn"
               onClick={async () => {
-                // reset onboarding on backend then reopen wizard
-                await fetch(
-                  `${API_URL}/api/onboarding/reset?user_id=${userId}`,
-                  { method: 'POST' }
-                );
+                await fetch(`${API_URL}/api/onboarding/reset?user_id=${userId}`, {
+                  method: 'POST'
+                });
                 setIsUnlocked(false);
               }}
             >
@@ -74,6 +71,7 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
           </div>
         </div>
       )}
+
       <h1 className="text-2xl font-bold mb-4">🧭 Your Self-Map</h1>
       <p className="mb-6 text-gray-700">
         Here’s what we’ve picked up so far. You can explore further anytime — the more we learn about you, the more aligned our support will be.
@@ -95,11 +93,9 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
         <button
           className="btn"
           onClick={async () => {
-            // reset onboarding on backend then reopen wizard
-            await fetch(
-              `${API_URL}/api/onboarding/reset?user_id=${userId}`,
-              { method: 'POST' }
-            );
+            await fetch(`${API_URL}/api/onboarding/reset?user_id=${userId}`, {
+              method: 'POST'
+            });
             setIsUnlocked(false);
           }}
         >
