@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
-import AvatarComposer from '../avatar/AvatarComposer';
 import { useAuth } from '../../../context/AuthContext';
 
 type Source = {
@@ -54,14 +53,24 @@ export default function RagChatView() {
     setUUID(getOrCreateUserUUID());
   }, []);
 
+  // ✅ Rehydrate messages when user or component reloads
   useEffect(() => {
-    if (!uuid) return;
-    fetch(`${BACKEND_URL}/session-memory/${uuid}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data?.messages?.length) setMessages(data.messages);
-      });
-  }, [uuid]);
+    const saved = sessionStorage.getItem("xavigate_chat");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setMessages(parsed);
+        }
+      } catch (e) {
+        console.warn("❌ Failed to parse chat session");
+      }
+    }
+  }, [user?.name]);
+
+  useEffect(() => {
+    sessionStorage.setItem("xavigate_chat", JSON.stringify(messages));
+  }, [messages]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -81,6 +90,12 @@ export default function RagChatView() {
     setInput('');
     setIsTyping(true);
 
+    const traitSummary = user?.traitScores
+      ? Object.entries(user.traitScores)
+          .map(([trait, score]) => `- ${trait}: ${score.toFixed(2)}`)
+          .join('\n')
+      : '';
+
     try {
       const res = await fetch(`${BACKEND_URL}/generate`, {
         method: 'POST',
@@ -92,7 +107,8 @@ export default function RagChatView() {
           prompt: trimmed,
           uuid,
           avatar: profile?.avatar_id,
-          tone: profile?.prompt_framing
+          tone: profile?.prompt_framing,
+          traitSummary
         })
       });
 
@@ -100,7 +116,7 @@ export default function RagChatView() {
 
       const assistantMessage: Message = {
         sender: 'assistant',
-        text: data.answer,
+        text: data.answer || "⚠️ No response received from AI.",
         sources: data.sources || [],
         followup: data.followup || null,
         timestamp: getTimestamp()
@@ -119,7 +135,16 @@ export default function RagChatView() {
         })
       });
     } catch (err) {
-      console.error('Error fetching response:', err);
+      console.error('❌ Error fetching response:', err);
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: 'assistant',
+          text: "❌ Something went wrong while connecting to the AI.",
+          timestamp: getTimestamp()
+        }
+      ]);
+      setIsTyping(false);
     }
   };
 
@@ -127,11 +152,23 @@ export default function RagChatView() {
     <div className="flex flex-col h-full bg-white rounded shadow">
       <ChatHeader
         avatar={user?.avatarProfile?.avatar_id || user?.name || null}
-        tone={user?.avatarProfile?.prompt_framing}
+        tone={profile?.prompt_framing}
       />
 
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col">
-        <MessageList messages={messages} bottomRef={messagesEndRef} />
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col space-y-4">
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              className={`max-w-xl px-4 py-3 rounded-lg leading-relaxed text-base ${
+                msg.sender === "user"
+                  ? "bg-indigo-100 text-indigo-900 text-right"
+                  : "bg-gray-100 text-gray-800 text-left"
+              }`}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
 
         {isTyping && (
           <div className="flex items-center gap-2 mb-3">

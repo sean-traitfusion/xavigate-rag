@@ -107,11 +107,24 @@ function AppContent() {
           );
         }
 
-        console.log("✅ Rendering MNProfileView for", userName, traitScores);
         return (
           <MNProfileView
             traitScores={traitScores}
-            onAskGPT={(prompt) => console.log('ask:', prompt)}
+            onAskGPT={(prompt) => {
+              fetch("http://localhost:8010/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: prompt }),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  alert("AI says:\n\n" + data.reply);
+                })
+                .catch((err) => {
+                  console.error("❌ AI chat failed:", err);
+                  alert("⚠️ Could not get AI response.");
+                });
+            }}
           />
         );
 
