@@ -1,7 +1,7 @@
 from chromadb import PersistentClient
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
-from backend.db import get_connection
-from backend.embeddings import get_embedding
+from db import get_connection
+from embeddings import get_embedding
 import uuid
 import json
 
@@ -48,7 +48,19 @@ def upsert_to_chroma(docs):
             embeddings=[embedding]
         )
 
-        # Store embedding in Postgres
-        update_embedding(doc_id, embedding)
+def store_embeddings(embedded_chunks):
+    for chunk in embedded_chunks:
+        content = chunk["content"]
+        embedding = chunk["embedding"]
+        raw_metadata = chunk["metadata"]
+        metadata = {k: v for k, v in raw_metadata.items() if not isinstance(v, list)}
+        chunk_id = chunk["id"]
 
-    print(f"✅ Upserted {len(docs)} chunks into Chroma")
+        collection.upsert(
+            documents=[content],
+            embeddings=[embedding],
+            metadatas=[metadata],
+            ids=[chunk_id],
+        )
+
+    print(f"✅ Stored {len(embedded_chunks)} embedded chunks in Chroma")

@@ -46,6 +46,11 @@ class SessionRecord(BaseModel):
     micro_action_suggested: Optional[str] = None
     micro_action_response: Optional[str] = None
 
+class TraitTheme(BaseModel):
+    confidence: float
+    source: str  # e.g., "onboarding", "followup", etc.
+    notes: str
+
 class UserProfile(BaseModel):
     user_id: str
     name: Optional[str]
@@ -66,6 +71,12 @@ class UserProfile(BaseModel):
     last_session_summary: Optional[str] = None
     coaching_ready_flag: Optional[bool] = False
     trust_established_flag: Optional[bool] = False
+    unlocked: bool = False
+    # Tracks which onboarding question the user is on
+    onboarding_index: int = 0
+    trait_themes: Dict[str, TraitTheme] = {}
+    # Human-readable summary of user's core strengths
+    summary: Optional[str] = None
 
 class UserMemory(BaseModel):
     uuid: UUID

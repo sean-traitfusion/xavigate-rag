@@ -1,0 +1,169 @@
+.
+├── 📋 What Has Been Done.docx
+├── backend
+│   ├── __init__.py
+│   ├── agents
+│   │   ├── critique_agent.py
+│   │   ├── follow_up_agent.py
+│   │   └── goal_setter.py
+│   ├── api.py
+│   ├── avatars
+│   │   └── templates.py
+│   ├── bulk_chunk_all.py
+│   ├── chunking.py
+│   ├── convert_glossary_csv_to_jsonl.py
+│   ├── db.py
+│   ├── embeddings.py
+│   ├── ingest_chunks.py
+│   ├── ingest_glossary.py
+│   ├── main.py
+│   ├── memory
+│   │   ├── consolidate_session.py
+│   │   ├── data
+│   │   ├── models.py
+│   │   ├── routes.py
+│   │   └── storage.py
+│   ├── metrics
+│   │   ├── scoring_aq.py
+│   │   ├── scoring_ass.py
+│   │   └── scoring_tas_sas.py
+│   ├── onboarding
+│   │   ├── __init__.py
+│   │   ├── flow.py
+│   │   └── onboarding_routes.py
+│   ├── prompt_engine
+│   │   └── engine.py
+│   ├── query.py
+│   ├── repair_jsonl.py
+│   ├── session
+│   │   ├── __init__.py
+│   │   ├── aq_routes.py
+│   │   ├── conversation_manager.py
+│   │   ├── flow.py
+│   │   ├── session_routes.py
+│   │   ├── session_state.py
+│   │   └── user_profile_routes.py
+│   ├── tags
+│   │   ├── infer_tags.py
+│   │   └── promote_tags.py
+│   ├── test_generate_dummy.py
+│   └── vectorstore.py
+├── bulk_chunks_all_cleaned.jsonl
+├── bulk_chunks_all.jsonl
+├── chroma_db
+│   ├── 625be5d1-f8da-404b-9d03-4f54b431f1c0
+│   │   ├── data_level0.bin
+│   │   ├── header.bin
+│   │   ├── length.bin
+│   │   └── link_lists.bin
+│   ├── chroma.sqlite3
+│   └── f35a89a0-e1d1-4f15-9374-707348ac6a67
+│       ├── data_level0.bin
+│       ├── header.bin
+│       ├── length.bin
+│       └── link_lists.bin
+├── data
+│   └── embedding_cache.json
+├── docker-compose.yml
+├── Dockerfile
+├── docs
+│   ├── 📋 Current Brain Contents.docx
+│   ├── Adaptive Learning with Xavigate.docx
+│   ├── alignment_dynamics
+│   │   ├── ad_framework.json
+│   │   ├── Alignment Dynamics Unblocking Module - Chunking.docx
+│   │   ├── Alignment Mapper.md
+│   │   └── Re-Aligner Module.md
+│   ├── glossary
+│   │   ├── glossary.csv
+│   │   └── glossary.jsonl
+│   ├── methods
+│   │   ├── menu_of_life.docx
+│   │   └── task_trait_alignment.docx
+│   ├── problems
+│   │   └── Focus on 5 Adult Professional Areas.docx
+│   ├── programs
+│   │   └── mn_reintegration.docx
+│   ├── prompts
+│   ├── scope_of_xavigate.docx
+│   └── Workflow to Design the System.docx
+├── frontend
+│   ├── build
+│   │   ├── asset-manifest.json
+│   │   ├── favicon.ico
+│   │   ├── index.css
+│   │   ├── index.html
+│   │   ├── logo192.png
+│   │   ├── logo512.png
+│   │   ├── manifest.json
+│   │   ├── robots.txt
+│   │   └── static
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── favicon.ico
+│   │   ├── index.css
+│   │   ├── index.html
+│   │   ├── logo192.png
+│   │   ├── logo512.png
+│   │   ├── manifest.json
+│   │   └── robots.txt
+│   ├── README.md
+│   ├── root
+│   │   ├── postcss.config.js
+│   │   └── tailwind.config.js
+│   ├── src
+│   │   ├── App.css
+│   │   ├── avatar
+│   │   ├── components
+│   │   ├── context
+│   │   ├── index.css
+│   │   ├── index.tsx
+│   │   ├── logo.svg
+│   │   ├── onboarding
+│   │   ├── react-app-env.d.ts
+│   │   ├── reportWebVitals.ts
+│   │   ├── session
+│   │   ├── setupTests.ts
+│   │   ├── types
+│   │   ├── ui-kit
+│   │   └── XavigateApp.tsx
+│   └── tsconfig.json
+├── ingestion instructions.docx
+├── notebooks
+├── php-dashboard
+│   ├── config.php
+│   ├── debug.php
+│   ├── favicon.ico
+│   └── index.php
+├── README.md
+├── requirements.txt
+├── structure.txt
+├── test_payload.json
+└── xavigate-ui-kit
+    ├── package-lock.json
+    ├── package.json
+    ├── public
+    │   ├── favicon.ico
+    │   ├── index.html
+    │   ├── logo192.png
+    │   ├── logo512.png
+    │   ├── manifest.json
+    │   └── robots.txt
+    ├── README.md
+    └── src
+        ├── App.css
+        ├── App.js
+        ├── App.test.js
+        ├── components
+        ├── context
+        ├── index.css
+        ├── index.js
+        ├── logo.svg
+        ├── reportWebVitals.js
+        ├── setupTests.js
+        ├── stories
+        ├── theme.js
+        └── ui-kit
+
+44 directories, 123 files

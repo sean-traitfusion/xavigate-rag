@@ -12,7 +12,7 @@ interface SidebarProps {
 }
 
 const navItems = [
-  ["🏠 Home", "home"],
+  ["🧠 About You", "getToKnowYou"],
   ["💬 Chat", "chat"],
   ["🪞 Reflect", "reflect"],
   ["🧭 Plan", "plan"],

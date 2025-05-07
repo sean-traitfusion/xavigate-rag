@@ -127,6 +127,31 @@ def purge_expired_session_memory():
     cursor.execute("DELETE FROM session_memory WHERE expires_at < NOW();")
     print("🧹 Expired session memory purged")
 
+from .models import TraitTheme
+
+def update_trait_theme(user_id: str, trait_name: str, new_theme: TraitTheme):
+    profile = load_user_profile(user_id)
+    if not profile:
+        print(f"❌ User profile not found for {user_id}")
+        return
+
+    profile.trait_themes[trait_name] = new_theme
+    save_user_profile(profile)
+    print(f"✅ Updated trait theme: {trait_name} → {new_theme.confidence}")
+
+def mark_user_unlocked(user_id: str):
+    profile = load_user_profile(user_id)
+    if not profile:
+        print(f"❌ User profile not found for {user_id}")
+        return
+
+    profile.unlocked = True
+    save_user_profile(profile)
+    print(f"🔓 User {user_id} is now marked as unlocked.")
+
+def is_user_unlocked(user_id: str) -> bool:
+    profile = load_user_profile(user_id)
+    return profile.unlocked if profile else False
 
 # Dev test hook
 def init_test_user():

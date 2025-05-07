@@ -3,7 +3,7 @@ import { useAuth } from '../../../context/AuthContext';
 import PlanPreview from '../sidebar/PlanPreview';
 
 const navItems = [
-  { id: 'home', label: '🏠 Home' },
+  { id: 'getToKnowYou', label: '🧭 Get to Know You' },
   { id: 'chat', label: '💬 Chat' },
   { id: 'reflect', label: '🪞 Reflect' },
   { id: 'plan', label: '🧭 Plan' },

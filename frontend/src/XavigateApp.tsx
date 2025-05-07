@@ -6,7 +6,7 @@ import SignIn from './ui-kit/components/account/SignIn';
 import Sidebar from './ui-kit/components/layout/Sidebar';
 import MobileHeader from './ui-kit/components/layout/MobileHeader';
 
-// import HomeView from './ui-kit/components/home/HomeView';
+import HomeView from './ui-kit/components/home/GetToKnowYouView';
 import ChatView from './ui-kit/components/chat/RagChatView';
 import ReflectView from './ui-kit/components/reflect/ReflectView';
 // import InsightsView from './ui-kit/components/insights/InsightsView';
@@ -16,6 +16,7 @@ import PlanView from './ui-kit/components/plan/PlanView';
 import AccountView from './ui-kit/components/account/AccountView';
 // import ModulesView from './ui-kit/components/modules/ModulesView';
 import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
+import OnboardingWizard from './onboarding/OnboardingWizard';
 
 
 function AppContent() {
@@ -23,8 +24,22 @@ function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [activeView, setActiveView] = useState<string>(() =>
-    localStorage.getItem('activeView') || 'home'
+    localStorage.getItem('activeView') || 'getToKnowYou'
   );
+  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
+
+
+  useEffect(() => {
+    if (!user?.uuid) return;
+  
+    const checkUnlock = async () => {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/onboarding/status?user_id=${user.uuid}`);
+      const json = await res.json();
+      setIsUnlocked(json.unlocked);
+    };
+  
+    checkUnlock();
+  }, [user?.uuid]);
 
   useEffect(() => {
     localStorage.setItem('activeView', activeView);
@@ -43,7 +58,15 @@ function AppContent() {
 
   const renderView = () => {
     switch (activeView) {
-      // case 'home': return <HomeView />;
+      case 'getToKnowYou':
+        return (
+          <HomeView
+            onNavigate={(view: string) => {
+              setActiveView(view);
+              if (isMobile) setSidebarOpen(false);
+            }}
+          />
+        );
       case 'chat': return <ChatView />;
       case 'reflect': return <ReflectView />;
       case 'plan': return <PlanView />;
@@ -63,7 +86,20 @@ function AppContent() {
     }
   };
 
-  if (!user) return <SignIn />;
+  // If user is not signed in, show sign-in form
+  if (!user) {
+    return <SignIn />;
+  }
+
+  // Waiting for onboarding status to load
+  if (isUnlocked === null) {
+    return <div>Loading...</div>;
+  }
+
+  // If user has not completed onboarding, show only the onboarding wizard
+  if (!isUnlocked) {
+    return <OnboardingWizard onComplete={() => setIsUnlocked(true)} />;
+  }
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>

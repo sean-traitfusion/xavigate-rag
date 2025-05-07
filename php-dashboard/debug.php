@@ -188,3 +188,13 @@ echo pretty_json(json_encode($persistent));
 
 echo "<h3>Session Memory</h3>";
 echo pretty_json(json_encode($session));
+
+// Show backend file-based user profile (in dev mode)
+echo "<h3>User Profile File (backend/memory/data)</h3>";
+$profile_path = __DIR__ . '/../backend/memory/data/user_' . $uuid . '.json';
+if (file_exists($profile_path)) {
+    $file_contents = file_get_contents($profile_path);
+    echo "<pre style='white-space: pre-wrap; word-wrap: break-word;'>" . htmlspecialchars($file_contents) . "</pre>";
+} else {
+    echo "<p><em>No file-based user profile found at <code>" . htmlspecialchars($profile_path) . "</code>.</em></p>";
+}
