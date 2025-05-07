@@ -1,22 +1,8 @@
-import React from 'react';
-import { useAuth } from '../../../context/AuthContext';
-import LanguageSelector from '../shared/LanguageSelector';
-import PlanPreview from '../sidebar/PlanPreview';
-
-import {
-  User,
-  MessageSquare,
-  Mirror,
-  Map,
-  LineChart,
-  BarChart2,
-  SmilePlus,
-  Puzzle,
-  Settings,
-  FlaskConical
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { User, ChevronDown } from 'lucide-react';
 
 interface SidebarProps {
+  userName: string | null;
   setActiveView: (view: string) => void;
   isVisible: boolean;
   onClose: () => void;
@@ -24,25 +10,23 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { label: "About You", view: "getToKnowYou", icon: User },
-  { label: "Chat", view: "chat", icon: MessageSquare },
-  { label: "Reflect", view: "reflect", icon: Mirror },
-  { label: "Plan", view: "plan", icon: Map },
-  { label: "Insights", view: "insights", icon: LineChart },
-  { label: "Metrics", view: "metrics", icon: BarChart2 },
-  { label: "Avatar Composer", view: "avatar", icon: SmilePlus },
-  { label: "Modules", view: "modules", icon: Puzzle },
-  { label: "My Account", view: "account", icon: Settings },
-  { label: "Playground", view: "playground", icon: FlaskConical }
+  ["About You", "getToKnowYou"],
+  ["Chat", "chat"],
+  ["Reflect", "reflect"],
+  ["Plan", "plan"],
+  ["Avatar Composer", "avatar"],
+  ["Account", "account"],
+  ["Playground", "playground"],
 ];
 
 export default function Sidebar({
+  userName,
   setActiveView,
   isVisible,
   onClose,
-  activeView
+  activeView,
 }: SidebarProps) {
-  const { user, signOut } = useAuth();
+  const [showMenu, setShowMenu] = useState(false);
   const isMobile = window.innerWidth < 768;
 
   return (
@@ -67,19 +51,16 @@ export default function Sidebar({
       <div>
         {isMobile && (
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button
-              onClick={onClose}
-              style={{ background: "none", border: "none" }}
-            >
+            <button onClick={onClose} style={{ background: "none", border: "none" }}>
               ✕
             </button>
           </div>
         )}
 
-        <h3>Xavigate</h3>
+        <h3 className="font-semibold text-lg mb-4">Xavigate</h3>
 
         <ul style={{ listStyle: "none", padding: 0 }}>
-          {navItems.map(({ label, view, icon: Icon }) => (
+          {navItems.map(([label, view]) => (
             <li
               key={view}
               onClick={() => {
@@ -87,51 +68,52 @@ export default function Sidebar({
                 if (isMobile) onClose();
               }}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
                 marginBottom: "0.75rem",
                 cursor: "pointer",
                 fontWeight: view === activeView ? 600 : 400,
-                backgroundColor:
-                  view === activeView ? "#e0e7ff" : "transparent",
+                backgroundColor: view === activeView ? "#e0e7ff" : "transparent",
                 padding: "0.5rem 0.75rem",
                 borderRadius: "6px",
               }}
             >
-              <Icon size={18} />
-              <span>{label}</span>
+              {label}
             </li>
           ))}
         </ul>
-
-        <PlanPreview />
       </div>
 
-      <div>
-        {user && (
-          <div style={{ fontSize: "0.85rem", marginBottom: "1rem" }}>
-            Logged in as <strong>{user.name}</strong>
-            <div>
+      {userName && (
+        <div className="relative mt-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(prev => !prev);
+            }}
+            className="flex items-center gap-2 text-sm text-gray-700 hover:text-indigo-600 transition"
+          >
+            <User size={16} />
+            <span>{userName}</span>
+            <ChevronDown size={14} />
+          </button>
+
+          {showMenu && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="absolute left-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow z-50"
+            >
               <button
-                onClick={signOut}
-                style={{
-                  marginTop: "0.5rem",
-                  padding: "0.3rem 0.6rem",
-                  fontSize: "0.85rem",
-                  backgroundColor: "#eee",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  cursor: "pointer",
+                onClick={() => {
+                  localStorage.removeItem('xavigate_user');
+                  window.location.reload();
                 }}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Sign Out
               </button>
             </div>
-          </div>
-        )}
-        <LanguageSelector />
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

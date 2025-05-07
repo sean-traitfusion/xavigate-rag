@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 
-import { AuthProvider, useAuth } from './context/AuthContext';
 import SignIn from './ui-kit/components/account/SignIn';
-
 import Sidebar from './ui-kit/components/layout/Sidebar';
 import MobileHeader from './ui-kit/components/layout/MobileHeader';
-
 import HomeView from './ui-kit/components/home/GetToKnowYouView';
 import ChatView from './ui-kit/components/chat/RagChatView';
 import ReflectView from './ui-kit/components/reflect/ReflectView';
@@ -15,31 +12,14 @@ import PlanView from './ui-kit/components/plan/PlanView';
 import AccountView from './ui-kit/components/account/AccountView';
 import PlaygroundView from './ui-kit/components/dev/PlaygroundView';
 
-import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
-import OnboardingWizard from './onboarding/OnboardingWizard';
-
 function AppContent() {
-  const { user } = useAuth();
+  console.log("🚀 XavigateApp loaded");
+
+  const [userName, setUserName] = useState<string | null>(() => localStorage.getItem('xavigate_user'));
+  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [activeView, setActiveView] = useState<string>('playground'); // ✅ set default view to playground
-  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (!user?.uuid) return;
-
-    const checkUnlock = async () => {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/onboarding/status?user_id=${user.uuid}`);
-      const json = await res.json();
-      setIsUnlocked(json.unlocked);
-    };
-
-    checkUnlock();
-  }, [user?.uuid]);
-
-  useEffect(() => {
-    localStorage.setItem('activeView', activeView);
-  }, [activeView]);
+  const [activeView, setActiveView] = useState<string>('playground');
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,17 +32,16 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleSignIn = (name: string) => {
+    setUserName(name);
+    localStorage.setItem('xavigate_user', name);
+  };
+
+
   const renderView = () => {
     switch (activeView) {
       case 'getToKnowYou':
-        return (
-          <HomeView
-            onNavigate={(view: string) => {
-              setActiveView(view);
-              if (isMobile) setSidebarOpen(false);
-            }}
-          />
-        );
+        return <HomeView onNavigate={setActiveView} />;
       case 'chat':
         return <ChatView />;
       case 'reflect':
@@ -72,8 +51,8 @@ function AppContent() {
       case 'avatar':
         return (
           <AvatarComposer
-            uuid={user?.uuid || 'unknown'}
-            backendUrl={process.env.REACT_APP_API_URL || 'http://localhost:8010'}
+            uuid={userName || 'unknown'}
+            backendUrl={import.meta.env.VITE_API_URL || 'http://localhost:8010'}
             onSave={(profile) => console.log('✅ Avatar saved:', profile)}
           />
         );
@@ -96,13 +75,15 @@ function AppContent() {
     }
   };
 
-  if (!user) return <SignIn />;
-  if (isUnlocked === null) return <div>Loading...</div>;
-  if (!isUnlocked) return <OnboardingWizard onComplete={() => setIsUnlocked(true)} />;
+  if (!userName) {
+    return <SignIn onSubmit={handleSignIn} />;
+  }
+  
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar
+        userName={userName}
         setActiveView={(view: string) => {
           setActiveView(view);
           if (isMobile) setSidebarOpen(false);
@@ -112,11 +93,7 @@ function AppContent() {
         activeView={activeView}
       />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        <MobileHeader
-          onToggle={() => {
-            if (isMobile) setSidebarOpen(prev => !prev);
-          }}
-        />
+        <MobileHeader onToggle={() => isMobile && setSidebarOpen(prev => !prev)} />
         <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
           {renderView()}
         </div>
@@ -126,11 +103,5 @@ function AppContent() {
 }
 
 export default function XavigateApp() {
-  return (
-    <AuthProvider>
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
-    </AuthProvider>
-  );
+  return <AppContent />;
 }

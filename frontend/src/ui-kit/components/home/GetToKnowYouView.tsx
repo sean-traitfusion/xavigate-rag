@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import OnboardingWizard from '../../../onboarding/OnboardingWizard';
 import { useAuth } from '../../../context/AuthContext';
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8010";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8010";
 const UUID_KEY = "xavigate_user_uuid";
 
 function getUUID() {
@@ -15,7 +14,6 @@ interface GetToKnowYouProps {
 
 export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
   const { user } = useAuth();
-  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
   const [traitThemes, setTraitThemes] = useState<Record<string, any>>({});
   const [isReturning, setIsReturning] = useState(false);
 
@@ -23,12 +21,11 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/onboarding/status?user_id=${userId}`);
+      const res = await fetch(`${API_URL}/api/user/${userId}`);
       const json = await res.json();
-      setIsUnlocked(json.unlocked);
       setTraitThemes(json.trait_themes || {});
     } catch (err) {
-      console.error("Failed to fetch onboarding status:", err);
+      console.error("Failed to fetch profile:", err);
     }
   };
 
@@ -37,16 +34,10 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
   }, [userId]);
 
   useEffect(() => {
-    if (isUnlocked) {
-      const last = localStorage.getItem('lastVisit');
-      if (last) setIsReturning(true);
-      localStorage.setItem('lastVisit', new Date().toISOString());
-    }
-  }, [isUnlocked]);
-
-  if (isUnlocked === false) {
-    return <OnboardingWizard onComplete={() => fetchProfile()} />;
-  }
+    const last = localStorage.getItem('lastVisit');
+    if (last) setIsReturning(true);
+    localStorage.setItem('lastVisit', new Date().toISOString());
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -57,16 +48,8 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
             <button className="btn" onClick={() => onNavigate?.('reflect')}>
               💭 Reflect
             </button>
-            <button
-              className="btn"
-              onClick={async () => {
-                await fetch(`${API_URL}/api/onboarding/reset?user_id=${userId}`, {
-                  method: 'POST'
-                });
-                setIsUnlocked(false);
-              }}
-            >
-              🔄 Update Traits
+            <button className="btn" onClick={() => fetchProfile()}>
+              🔄 Refresh
             </button>
           </div>
         </div>
@@ -87,20 +70,6 @@ export default function GetToKnowYouView({ onNavigate }: GetToKnowYouProps) {
             </p>
           </div>
         ))}
-      </div>
-
-      <div className="mt-6">
-        <button
-          className="btn"
-          onClick={async () => {
-            await fetch(`${API_URL}/api/onboarding/reset?user_id=${userId}`, {
-              method: 'POST'
-            });
-            setIsUnlocked(false);
-          }}
-        >
-          ✍️ Want to add more?
-        </button>
       </div>
     </div>
   );
