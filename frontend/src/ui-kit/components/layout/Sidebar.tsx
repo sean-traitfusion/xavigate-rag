@@ -1,16 +1,9 @@
-// src/ui-kit/components/layout/Sidebar.tsx
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import PlanPreview from '../sidebar/PlanPreview';
 import {
-  Home,
-  MessageSquare,
-  Compass,
-  User,
-  LogOut,
-  UserCircle,
-  Settings,
-  ChevronUp
+  Home, MessageSquare, Compass, User, LogOut,
+  UserCircle, Settings, ChevronUp
 } from 'lucide-react';
 
 type SidebarProps = {
@@ -23,6 +16,47 @@ type SidebarProps = {
 export default function Sidebar({ setActiveView, isVisible, onClose, activeView }: SidebarProps) {
   const { user, signOut } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<number | null>(null);
+
+  // Handle clicks outside of menu to close it
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleMouseLeave = () => {
+    // Use a small delay before closing the menu to allow the user
+    // to move the mouse into the dropdown area
+    timeoutRef.current = window.setTimeout(() => {
+      setUserMenuOpen(false);
+    }, 300); // 300ms delay
+  };
+
+  const handleMouseEnter = () => {
+    // Clear the timeout if user moves back into the menu area
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
 
   const navItems = [
     {
@@ -102,9 +136,17 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
         <PlanPreview />
       </div>
 
-      <div style={{ padding: '1rem', borderTop: '1px solid #eee', position: 'relative' }}>
+      {/* User menu block with improved hover behavior */}
+      <div
+        ref={menuRef}
+        style={{
+          padding: '1rem',
+          borderTop: '1px solid #eee',
+          position: 'relative'
+        }}
+      >
         <div
-          onClick={() => setUserMenuOpen(!userMenuOpen)}
+          onClick={() => setUserMenuOpen(prev => !prev)}
           style={{
             fontSize: '0.85rem',
             padding: '0.5rem',
@@ -127,18 +169,22 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
         </div>
 
         {userMenuOpen && (
-          <div style={{
-            position: 'absolute',
-            bottom: '100%',
-            left: '1rem',
-            right: '1rem',
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            marginBottom: '0.5rem',
-            overflow: 'hidden',
-            border: '1px solid #e5e7eb'
-          }}>
+          <div 
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              position: 'absolute',
+              bottom: '100%',
+              left: '1rem',
+              right: '1rem',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              marginBottom: '0.5rem',
+              overflow: 'hidden',
+              border: '1px solid #e5e7eb'
+            }}
+          >
             <div
               onClick={() => {
                 setActiveView('account');

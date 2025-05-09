@@ -4,6 +4,7 @@ const AccountView: React.FC = () => {
   const [firstName, setFirstName] = useState('Steven');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('steven');
+  const [email, setEmail] = useState('steven@example.com');
   const [language, setLanguage] = useState('English');
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -19,7 +20,7 @@ const AccountView: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('✅ Profile saved:', { firstName, lastName, username, language });
+    console.log('✅ Profile saved:', { firstName, lastName, username, email, language });
   };
 
   return (
@@ -63,6 +64,14 @@ const AccountView: React.FC = () => {
           style={inputStyle}
         />
 
+        <label style={labelStyle}>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={inputStyle}
+        />
+
         <label style={labelStyle}>Language</label>
         <select
           value={language}
@@ -95,6 +104,7 @@ const AccountView: React.FC = () => {
         </div>
       </form>
 
+      {/* Change Password Section */}
       <div style={{ borderTop: '1px solid #eee', marginTop: '32px', paddingTop: '24px' }}>
         <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>
           Security
