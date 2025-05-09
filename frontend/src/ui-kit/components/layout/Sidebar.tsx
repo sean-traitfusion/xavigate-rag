@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import PlanPreview from '../sidebar/PlanPreview';
+import UserMenu from '../layout/UserMenu'; // Adjusted import path
 import {
-  Home, MessageSquare, Compass, User, LogOut,
-  UserCircle, Settings, ChevronUp
+  Home, MessageSquare, Compass, User, UserCircle
 } from 'lucide-react';
 
 type SidebarProps = {
@@ -15,48 +15,6 @@ type SidebarProps = {
 
 export default function Sidebar({ setActiveView, isVisible, onClose, activeView }: SidebarProps) {
   const { user, signOut } = useAuth();
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<number | null>(null);
-
-  // Handle clicks outside of menu to close it
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-  
-  // Clear timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleMouseLeave = () => {
-    // Use a small delay before closing the menu to allow the user
-    // to move the mouse into the dropdown area
-    timeoutRef.current = window.setTimeout(() => {
-      setUserMenuOpen(false);
-    }, 300); // 300ms delay
-  };
-
-  const handleMouseEnter = () => {
-    // Clear the timeout if user moves back into the menu area
-    if (timeoutRef.current !== null) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-  };
 
   const navItems = [
     {
@@ -136,92 +94,8 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
         <PlanPreview />
       </div>
 
-      {/* User menu block with improved hover behavior */}
-      <div
-        ref={menuRef}
-        style={{
-          padding: '1rem',
-          borderTop: '1px solid #eee',
-          position: 'relative'
-        }}
-      >
-        <div
-          onClick={() => setUserMenuOpen(prev => !prev)}
-          style={{
-            fontSize: '0.85rem',
-            padding: '0.5rem',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: userMenuOpen ? '#f3f4f6' : 'transparent',
-            cursor: 'pointer'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <User size={14} style={{ marginRight: '16px' }} />
-            <strong>{user?.name || 'Anonymous'}</strong>
-          </div>
-          <ChevronUp size={14} style={{
-            transform: userMenuOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-            transition: 'transform 0.2s ease'
-          }} />
-        </div>
-
-        {userMenuOpen && (
-          <div 
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            style={{
-              position: 'absolute',
-              bottom: '100%',
-              left: '1rem',
-              right: '1rem',
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-              marginBottom: '0.5rem',
-              overflow: 'hidden',
-              border: '1px solid #e5e7eb'
-            }}
-          >
-            <div
-              onClick={() => {
-                setActiveView('account');
-                setUserMenuOpen(false);
-              }}
-              style={{
-                padding: '0.75rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                borderBottom: '1px solid #e5e7eb',
-                fontSize: '0.85rem'
-              }}
-            >
-              <Settings size={14} style={{ marginRight: '16px' }} />
-              Account Settings
-            </div>
-            <div
-              onClick={() => {
-                signOut();
-                setUserMenuOpen(false);
-              }}
-              style={{
-                padding: '0.75rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                color: '#f43f5e',
-                cursor: 'pointer',
-                fontSize: '0.85rem'
-              }}
-            >
-              <LogOut size={14} style={{ marginRight: '16px' }} />
-              Sign Out
-            </div>
-          </div>
-        )}
-      </div>
+      {/* Use the UserMenu component */}
+      <UserMenu setActiveView={setActiveView} />
     </div>
   );
 }

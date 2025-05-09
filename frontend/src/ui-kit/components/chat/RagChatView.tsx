@@ -1,5 +1,5 @@
-// src/ui-kit/components/chat/RagChatView.tsx
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import MessageItem from './MessageItem';
 import ThinkingIndicator from './ThinkingIndicator';
@@ -11,19 +11,21 @@ import { getTimestamp, getOrCreateUserUUID } from './utils';
 
 export default function RagChatView() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const profile = user?.avatarProfile;
   const [uuid, setUUID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [avatar, setAvatar] = useState('chappelle'); // Avatar selection
+  const [avatar, setAvatar] = useState('chappelle');
+
+  const setActiveView = (view: string) => {
+    localStorage.setItem('activeView', view);
+    console.log('Navigating to view:', view);
+    navigate('/'); // 👈 Route change without reload
+  };
 
   const bottomRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [followup, setFollowup] = useState<string | null>(null);
-  const [showReflection, setShowReflection] = useState(false);
-  const isInitialLoad = useRef(true);
-
   const [typingSpeed] = useState(8);
   const [typingChunkSize] = useState(2);
   const [typingVariability] = useState(true);
@@ -43,17 +45,14 @@ export default function RagChatView() {
       });
   }, [uuid]);
 
-  // Improved scroll behavior - stops automatic scrolling on page load
+  const isInitialLoad = useRef(true);
+
   useEffect(() => {
-    // Only scroll when a new message is added or typing state changes
     if (messages.length > 0) {
-      // For initial load - scroll without animation
       if (isInitialLoad.current) {
         bottomRef.current?.scrollIntoView({ behavior: 'auto' });
         isInitialLoad.current = false;
-      } 
-      // For new messages or typing - scroll smoothly
-      else if (messages.length > 0) {
+      } else {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
       }
     }
@@ -61,22 +60,19 @@ export default function RagChatView() {
 
   useEffect(() => {
     const typingMessage = messages.find(m => m.isTyping === true);
-
     if (typingMessage) {
       const fullText = typingMessage.fullText || '';
       const currentText = typingMessage.text || '';
-
       if (currentText.length < fullText.length) {
-        const remainingChars = fullText.length - currentText.length;
-        const charsToAdd = Math.min(typingChunkSize, remainingChars);
+        const charsToAdd = Math.min(typingChunkSize, fullText.length - currentText.length);
         const newText = fullText.substring(0, currentText.length + charsToAdd);
         const nextChar = fullText[currentText.length];
         let adjustedSpeed = typingSpeed;
 
         if (typingVariability && nextChar) {
-          if ('.!?'.includes(nextChar)) adjustedSpeed = typingSpeed * 4;
-          else if (',;:'.includes(nextChar)) adjustedSpeed = typingSpeed * 2;
-          else if (nextChar === ' ' && Math.random() < 0.1) adjustedSpeed = typingSpeed * 1.5;
+          if ('.!?'.includes(nextChar)) adjustedSpeed *= 4;
+          else if (',;:'.includes(nextChar)) adjustedSpeed *= 2;
+          else if (nextChar === ' ' && Math.random() < 0.1) adjustedSpeed *= 1.5;
         }
 
         const timer = setTimeout(() => {
@@ -90,9 +86,7 @@ export default function RagChatView() {
         return () => clearTimeout(timer);
       } else {
         setMessages(prev =>
-          prev.map(m =>
-            m.isTyping ? { ...m, isTyping: false } : m
-          )
+          prev.map(m => m.isTyping ? { ...m, isTyping: false } : m)
         );
       }
     }
@@ -123,8 +117,8 @@ export default function RagChatView() {
         body: JSON.stringify({
           prompt: trimmed,
           uuid,
-          avatar, // Use selected avatar from dropdown
-          tone: avatar // Also use avatar as tone for now
+          avatar,
+          tone: avatar
         })
       });
 
@@ -204,7 +198,6 @@ export default function RagChatView() {
         margin: '0 auto',
         overflow: 'hidden'
       }}>
-        {/* Messages */}
         <div style={{
           flex: 1,
           overflowY: 'auto',
@@ -220,13 +213,13 @@ export default function RagChatView() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input with Avatar Selector */}
         <ChatInput
           input={input}
           setInput={setInput}
           sendMessage={sendMessage}
           avatar={avatar}
           setAvatar={setAvatar}
+          setActiveView={setActiveView} // ✅ wired up correctly
         />
       </div>
     </>

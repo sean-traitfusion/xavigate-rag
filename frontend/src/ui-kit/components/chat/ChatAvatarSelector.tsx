@@ -1,8 +1,6 @@
-// src/ui-kit/components/chat/ChatAvatarSelector.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronUp, Check, Plus } from 'lucide-react';
 
-// Update the avatar options array with a separator after the "Create New Avatar" option
 const AVATAR_OPTIONS = [
   { id: 'chappelle', name: 'Dave Chappelle', description: 'Satirical, sharp, truth-teller' },
   { id: 'dangerfield', name: 'Rodney Dangerfield', description: 'No respect, just real talk' },
@@ -12,11 +10,13 @@ const AVATAR_OPTIONS = [
 export interface ChatAvatarSelectorProps {
   selectedId: string;
   setSelectedId: (id: string) => void;
+  setActiveView: (view: string) => void; // ✅ required now
 }
 
 const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
   selectedId,
-  setSelectedId
+  setSelectedId,
+  setActiveView
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,12 +33,9 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
 
   const current = AVATAR_OPTIONS.find(opt => opt.id === selectedId) || AVATAR_OPTIONS[0];
 
-  // Function to handle "Create a New Avatar" option click
   const handleCreateNewAvatar = () => {
     setIsOpen(false);
-    // Here you would add navigation to the avatar creation page or open a modal
-    console.log('Create new avatar clicked');
-    // Add your logic to navigate or open modal here
+    setActiveView('avatar'); // ✅ navigate to Avatar Composer screen
   };
 
   return (
@@ -80,7 +77,6 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
           }} />
         </div>
         
-        {/* Dropdown */}
         {isOpen && (
           <div
             style={{
@@ -96,7 +92,7 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
               zIndex: 20
             }}
           >
-            {/* Create a New Avatar Option */}
+            {/* Create a New Avatar */}
             <div
               onClick={handleCreateNewAvatar}
               style={{
@@ -137,7 +133,7 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
               </div>
             </div>
             
-            {/* Existing Avatar Options */}
+            {/* Avatar List */}
             {AVATAR_OPTIONS.map(opt => {
               const selected = opt.id === selectedId;
               return (

@@ -1,4 +1,3 @@
-// src/ui-kit/components/chat/ChatInput.tsx
 import React, { useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import ChatAvatarSelector from './ChatAvatarSelector';
@@ -9,6 +8,7 @@ export interface ChatInputProps {
   sendMessage: (e: React.FormEvent<HTMLFormElement>) => void;
   avatar: string;
   setAvatar: (id: string) => void;
+  setActiveView: (view: string) => void; // 🧂 added for Avatar Composer trigger
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
@@ -16,7 +16,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   setInput,
   sendMessage,
   avatar,
-  setAvatar
+  setAvatar,
+  setActiveView
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,7 +50,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
         backgroundColor: '#FFFFFF'
       }}
     >
-      {/* Input Form */}
       <div style={{ padding: '16px 24px 0' }}>
         <form
           onSubmit={sendMessage}
@@ -57,7 +57,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             display: 'flex',
             alignItems: 'center',
             border: '1px solid #C4B5FD',
-            borderRadius: '8px', // changed from '9999px' to rectangular
+            borderRadius: '8px',
             padding: '8px 16px',
             backgroundColor: '#fff',
             overflow: 'hidden'
@@ -83,7 +83,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
               minHeight: '40px'
             }}
           />
-
           <button
             type="submit"
             disabled={!input.trim()}
@@ -103,10 +102,10 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </form>
       </div>
 
-      {/* Footer with hint text and avatar selector */}
-      <ChatAvatarSelector 
-        selectedId={avatar} 
-        setSelectedId={setAvatar} 
+      <ChatAvatarSelector
+        selectedId={avatar}
+        setSelectedId={setAvatar}
+        setActiveView={setActiveView} // 🍗 the hot wing
       />
     </div>
   );
