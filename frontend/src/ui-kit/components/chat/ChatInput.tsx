@@ -1,66 +1,115 @@
-import { useState } from 'react';
-import { Button } from '../shared/Button';
+// src/ui-kit/components/chat/ChatInput.tsx
+import React, { useRef, useEffect } from 'react';
+import { Send } from 'lucide-react';
+import ChatAvatarSelector from './ChatAvatarSelector';
 
-type ChatInputProps = {
+export interface ChatInputProps {
   input: string;
   setInput: (value: string) => void;
   sendMessage: (e: React.FormEvent<HTMLFormElement>) => void;
-  followup: string | null;
-  setShowReflection: (value: boolean) => void;
-};
+  avatar: string;
+  setAvatar: (id: string) => void;
+}
 
-export default function ChatInput({
+const ChatInput: React.FC<ChatInputProps> = ({
   input,
   setInput,
   sendMessage,
-  followup,
-  setShowReflection
-}: ChatInputProps) {
+  avatar,
+  setAvatar
+}) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = '40px';
+    }
+  }, []);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const scrollPos = window.scrollY;
+    textarea.style.height = '20px';
+    textarea.style.height = `${Math.min(Math.max(40, textarea.scrollHeight), 150)}px`;
+    window.scrollTo(0, scrollPos);
+  }, [input]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (input.trim()) sendMessage(e as any);
+    }
+  };
+
   return (
-    <form
-      onSubmit={sendMessage}
+    <div
       style={{
-        display: 'flex',
-        gap: '0.5rem',
-        padding: '1rem',
-        borderTop: '1px solid #eee',
-        alignItems: 'center'
+        borderTop: '1px solid #E5E7EB',
+        backgroundColor: '#FFFFFF'
       }}
     >
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Ask something..."
-        style={{
-          flex: 1,
-          padding: '0.5rem',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          fontSize: '1rem'
-        }}
-      />
-      <Button type="submit" variant="primary">
-        Send
-      </Button>
-      {followup && (
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => setInput(followup)}
-          style={{ fontSize: '0.75rem' }}
+      {/* Input Form */}
+      <div style={{ padding: '16px 24px 0' }}>
+        <form
+          onSubmit={sendMessage}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            border: '1px solid #C4B5FD',
+            borderRadius: '8px', // changed from '9999px' to rectangular
+            padding: '8px 16px',
+            backgroundColor: '#fff',
+            overflow: 'hidden'
+          }}
         >
-          Suggest Follow-Up
-        </Button>
-      )}
-      <Button
-        type="button"
-        variant="ghost"
-        onClick={() => setShowReflection(true)}
-        style={{ fontSize: '0.75rem' }}
-      >
-        Start Reflection
-      </Button>
-    </form>
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Share your thoughts or ask a question..."
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              resize: 'none',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              padding: '6px 8px',
+              fontFamily:
+                '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+              backgroundColor: 'transparent',
+              minHeight: '40px'
+            }}
+          />
+
+          <button
+            type="submit"
+            disabled={!input.trim()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '8px',
+              background: 'transparent',
+              border: 'none',
+              cursor: input.trim() === '' ? 'default' : 'pointer',
+              borderRadius: '8px'
+            }}
+          >
+            <Send size={18} color="#8B5CF6" />
+          </button>
+        </form>
+      </div>
+
+      {/* Footer with hint text and avatar selector */}
+      <ChatAvatarSelector 
+        selectedId={avatar} 
+        setSelectedId={setAvatar} 
+      />
+    </div>
   );
-}
+};
+
+export default ChatInput;

@@ -1,40 +1,13 @@
+// src/ui-kit/components/chat/RagChatView.tsx
 import { useState, useRef, useEffect } from 'react';
-import MessageList from './MessageList';
-import ChatInput from './ChatInput';
-import ChatHeader from './ChatHeader';
-import AvatarComposer from '../avatar/AvatarComposer';
 import { useAuth } from '../../../context/AuthContext';
-
-type Source = {
-  term?: string;
-  id?: string;
-  metadata?: {
-    term?: string;
-    [key: string]: any;
-  };
-};
-
-type Message = {
-  sender: 'user' | 'assistant';
-  text: string;
-  timestamp?: string;
-  sources?: Source[];
-  followup?: string;
-};
-
-function getTimestamp() {
-  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function getOrCreateUserUUID(): string {
-  const key = 'xavigate_user_uuid';
-  let uuid = localStorage.getItem(key);
-  if (!uuid) {
-    uuid = crypto.randomUUID();
-    localStorage.setItem(key, uuid);
-  }
-  return uuid;
-}
+import MessageItem from './MessageItem';
+import ThinkingIndicator from './ThinkingIndicator';
+import WelcomeScreen from './WelcomeScreen';
+import ChatInput from './ChatInput';
+import AnimationStyles from './AnimationStyles';
+import { Message } from './types';
+import { getTimestamp, getOrCreateUserUUID } from './utils';
 
 export default function RagChatView() {
   const { user } = useAuth();
@@ -43,12 +16,19 @@ export default function RagChatView() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [avatar, setAvatar] = useState('chappelle'); // Avatar selection
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [followup, setFollowup] = useState<string | null>(null);
   const [showReflection, setShowReflection] = useState(false);
+  const isInitialLoad = useRef(true);
 
-  const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8010'; //check this
+  const [typingSpeed] = useState(8);
+  const [typingChunkSize] = useState(2);
+  const [typingVariability] = useState(true);
+
+  const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8010';
 
   useEffect(() => {
     setUUID(getOrCreateUserUUID());
@@ -62,11 +42,61 @@ export default function RagChatView() {
         if (data?.messages?.length) setMessages(data.messages);
       });
   }, [uuid]);
-  
+
+  // Improved scroll behavior - stops automatic scrolling on page load
+  useEffect(() => {
+    // Only scroll when a new message is added or typing state changes
+    if (messages.length > 0) {
+      // For initial load - scroll without animation
+      if (isInitialLoad.current) {
+        bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+        isInitialLoad.current = false;
+      } 
+      // For new messages or typing - scroll smoothly
+      else if (messages.length > 0) {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [messages, isTyping]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+    const typingMessage = messages.find(m => m.isTyping === true);
+
+    if (typingMessage) {
+      const fullText = typingMessage.fullText || '';
+      const currentText = typingMessage.text || '';
+
+      if (currentText.length < fullText.length) {
+        const remainingChars = fullText.length - currentText.length;
+        const charsToAdd = Math.min(typingChunkSize, remainingChars);
+        const newText = fullText.substring(0, currentText.length + charsToAdd);
+        const nextChar = fullText[currentText.length];
+        let adjustedSpeed = typingSpeed;
+
+        if (typingVariability && nextChar) {
+          if ('.!?'.includes(nextChar)) adjustedSpeed = typingSpeed * 4;
+          else if (',;:'.includes(nextChar)) adjustedSpeed = typingSpeed * 2;
+          else if (nextChar === ' ' && Math.random() < 0.1) adjustedSpeed = typingSpeed * 1.5;
+        }
+
+        const timer = setTimeout(() => {
+          setMessages(prev =>
+            prev.map(m =>
+              m.isTyping ? { ...m, text: newText } : m
+            )
+          );
+        }, adjustedSpeed);
+
+        return () => clearTimeout(timer);
+      } else {
+        setMessages(prev =>
+          prev.map(m =>
+            m.isTyping ? { ...m, isTyping: false } : m
+          )
+        );
+      }
+    }
+  }, [messages, typingSpeed, typingChunkSize, typingVariability]);
 
   const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,6 +108,7 @@ export default function RagChatView() {
       text: trimmed,
       timestamp: getTimestamp()
     };
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
@@ -92,8 +123,8 @@ export default function RagChatView() {
         body: JSON.stringify({
           prompt: trimmed,
           uuid,
-          avatar: profile?.avatar_id,
-          tone: profile?.prompt_framing
+          avatar, // Use selected avatar from dropdown
+          tone: avatar // Also use avatar as tone for now
         })
       });
 
@@ -101,7 +132,9 @@ export default function RagChatView() {
 
       const assistantMessage: Message = {
         sender: 'assistant',
-        text: data.answer,
+        text: '',
+        fullText: data.answer,
+        isTyping: true,
         sources: data.sources || [],
         followup: data.followup || null,
         timestamp: getTimestamp()
@@ -115,102 +148,87 @@ export default function RagChatView() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           uuid,
-          conversation_log: { messages: [...messages, userMessage, assistantMessage] },
+          conversation_log: {
+            messages: [...messages, userMessage, {
+              ...assistantMessage,
+              text: assistantMessage.fullText,
+              isTyping: false
+            }]
+          },
           interim_scores: {}
         })
       });
     } catch (err) {
       console.error('Error fetching response:', err);
+      setIsTyping(false);
+      setMessages(prev => [...prev, {
+        sender: 'assistant',
+        text: 'Sorry, I encountered an error. Please try again.',
+        timestamp: getTimestamp()
+      }]);
     }
   };
 
+  const handleSuggestionClick = (text: string) => {
+    setInput(text);
+    setTimeout(() => {
+      document.querySelector('textarea')?.focus();
+    }, 100);
+  };
+
+  const renderMessages = () => {
+    if (messages.length === 0) {
+      return <WelcomeScreen onSuggestionClick={handleSuggestionClick} />;
+    }
+
+    return messages.map((message, index) => (
+      <MessageItem
+        key={index}
+        message={message}
+        isUser={message.sender === 'user'}
+      />
+    ));
+  };
+
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      background: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 0 10px rgba(0,0,0,0.05)'
-    }}>
-      {/* Header */}
-      <ChatHeader
-        avatar={user?.avatarProfile?.avatar_id || user?.name || null}
-        tone={user?.avatarProfile?.prompt_framing}
-      />
-
-      {/* Messages */}
+    <>
+      <AnimationStyles />
       <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '1rem',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        height: '100%',
+        background: '#FAFAFA',
+        borderRadius: '12px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)',
+        maxWidth: '900px',
+        margin: '0 auto',
+        overflow: 'hidden'
       }}>
-        <MessageList messages={messages} bottomRef={messagesEndRef} />
-
-        {isTyping && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: '#ccc',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>🤖</div>
-            <div style={{
-              backgroundColor: '#f4f4f4',
-              padding: '0.75rem',
-              borderRadius: '8px',
-              display: 'flex',
-              gap: '4px',
-              alignItems: 'center',
-              fontSize: '1.25rem'
-            }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#666', animation: 'blink 1s infinite alternate', animationDelay: '0s' }} />
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#666', animation: 'blink 1s infinite alternate', animationDelay: '0.2s' }} />
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#666', animation: 'blink 1s infinite alternate', animationDelay: '0.4s' }} />
-            </div>
-          </div>
-        )}
-
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <ChatInput
-        input={input}
-        setInput={setInput}
-        sendMessage={sendMessage}
-        followup={followup}
-        setShowReflection={setShowReflection}
-      />
-      <form onSubmit={sendMessage} style={{ display: 'flex', gap: '0.5rem', padding: '1rem' }}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          style={{
-            flex: 1,
-            padding: '0.5rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px'
-          }}
-        />
-        <button type="submit" style={{
-          padding: '0.5rem 1rem',
-          border: 'none',
-          background: '#1976d2',
-          color: '#fff',
-          borderRadius: '4px',
-          cursor: 'pointer'
+        {/* Messages */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: '#FAFAFA',
+          scrollBehavior: 'auto',
+          justifyContent: messages.length > 0 ? 'flex-start' : 'flex-end'
         }}>
-          Send
-        </button>
-      </form>
-    </div>
+          {renderMessages()}
+          {isTyping && <ThinkingIndicator />}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* Input with Avatar Selector */}
+        <ChatInput
+          input={input}
+          setInput={setInput}
+          sendMessage={sendMessage}
+          avatar={avatar}
+          setAvatar={setAvatar}
+        />
+      </div>
+    </>
   );
 }

@@ -9,6 +9,7 @@ type User = {
   name: string;
   uuid: string;
   avatarProfile?: AvatarProfile;
+  onboardingCompleted?: boolean; // Added to skip onboarding
 };
 
 // Define the shape of the context
@@ -19,7 +20,7 @@ interface AuthContextType {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-// Create the context with an initial null value
+// Create the context with an initial undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Custom hook for accessing the context
@@ -32,7 +33,7 @@ export function useAuth(): AuthContextType {
 }
 
 // Provider component
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const signOut = () => {
@@ -57,7 +58,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    setUser({ name: username || 'Anonymous', uuid });
+    // Adding onboardingCompleted: true to skip the onboarding process
+    setUser({ 
+      name: username || 'Anonymous', 
+      uuid,
+      onboardingCompleted: true
+    });
   };
 
   return (
@@ -66,3 +72,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     </AuthContext.Provider>
   );
 }
+
+// Export both the provider and the hook
+export { AuthContext };

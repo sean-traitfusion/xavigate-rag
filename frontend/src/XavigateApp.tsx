@@ -17,7 +17,7 @@ import AccountView from './ui-kit/components/account/AccountView';
 // import ModulesView from './ui-kit/components/modules/ModulesView';
 import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
 import OnboardingWizard from './onboarding/OnboardingWizard';
-
+import MNTESTView from './ui-kit/components/MNTEST/MNTESTView';
 
 function AppContent() {
   const { user } = useAuth();
@@ -26,19 +26,12 @@ function AppContent() {
   const [activeView, setActiveView] = useState<string>(() =>
     localStorage.getItem('activeView') || 'getToKnowYou'
   );
-  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
 
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
 
   useEffect(() => {
     if (!user?.uuid) return;
-  
-    const checkUnlock = async () => {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/onboarding/status?user_id=${user.uuid}`);
-      const json = await res.json();
-      setIsUnlocked(json.unlocked);
-    };
-  
-    checkUnlock();
+    setIsUnlocked(true);
   }, [user?.uuid]);
 
   useEffect(() => {
@@ -67,51 +60,42 @@ function AppContent() {
             }}
           />
         );
-      case 'chat': return <ChatView />;
-      case 'reflect': return <ReflectView />;
-      case 'plan': return <PlanView />;
-      // case 'insights': return <InsightsView />;
-      // case 'metrics': return <MetricsView />;
+      case 'chat':
+        return <ChatView />;
+      case 'reflect':
+        return <ReflectView />;
+      case 'plan':
+        return <PlanView />;
       case 'avatar':
         return (
           <AvatarComposer
             uuid={user?.uuid || 'unknown'}
-            backendUrl={process.env.REACT_APP_API_URL || 'http://localhost:8010'} //check this
+            backendUrl={process.env.REACT_APP_API_URL || 'http://localhost:8010'}
             onSave={(profile) => console.log('✅ Avatar saved:', profile)}
           />
-      );
-      // case 'modules': return <ModulesView />;
-      case 'account': return <AccountView />;
-      default: return <div><h1>Unknown View</h1></div>;
+        );
+      case 'account':
+        return <AccountView />;
+      case 'mntest':
+        return <MNTESTView />;
+      default:
+        return <div><h1>Unknown View</h1></div>;
     }
   };
 
-  // If user is not signed in, show sign-in form
-  if (!user) {
-    return <SignIn />;
-  }
-
-  // Waiting for onboarding status to load
-  if (isUnlocked === null) {
-    return <div>Loading...</div>;
-  }
-
-  // If user has not completed onboarding, show only the onboarding wizard
-  if (!isUnlocked) {
-    return <OnboardingWizard onComplete={() => setIsUnlocked(true)} />;
-  }
+  if (!user) return <SignIn />;
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar
         setActiveView={(view: string) => {
-        setActiveView(view);
-        if (isMobile) setSidebarOpen(false);
-      }}
-      isVisible={sidebarOpen}
-      onClose={() => setSidebarOpen(false)}
-      activeView={activeView}
-    />
+          setActiveView(view);
+          if (isMobile) setSidebarOpen(false);
+        }}
+        isVisible={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        activeView={activeView}
+      />
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <MobileHeader
