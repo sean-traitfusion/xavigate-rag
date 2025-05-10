@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import PlanPreview from '../sidebar/PlanPreview';
-import UserMenu from '../layout/UserMenu'; // Adjusted import path
+import UserMenu from '../layout/UserMenu';
 import {
   Home, MessageSquare, Compass, User, UserCircle
 } from 'lucide-react';
@@ -14,7 +13,7 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ setActiveView, isVisible, onClose, activeView }: SidebarProps) {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
 
   const navItems = [
     {
@@ -90,8 +89,6 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
             {item.label}
           </button>
         ))}
-
-        <PlanPreview />
       </div>
 
       {/* Use the UserMenu component */}

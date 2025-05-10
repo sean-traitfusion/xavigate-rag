@@ -9,29 +9,21 @@ import MobileHeader from './ui-kit/components/layout/MobileHeader';
 
 import HomeView from './ui-kit/components/home/GetToKnowYouView';
 import ChatView from './ui-kit/components/chat/RagChatView';
-import ReflectView from './ui-kit/components/reflect/ReflectView';
-// import InsightsView from './ui-kit/components/insights/InsightsView';
-// import MetricsView from './ui-kit/components/metrics/MetricsView';
 import AvatarComposer from './ui-kit/components/avatar/AvatarComposer';
-import PlanView from './ui-kit/components/plan/PlanView';
 import AccountView from './ui-kit/components/account/AccountView';
-// import ModulesView from './ui-kit/components/modules/ModulesView';
 import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
 import OnboardingWizard from './onboarding/OnboardingWizard';
 import MNTESTView from './ui-kit/components/MNTEST/MNTESTView';
 
-// Import content pages
 import AboutXavigate from './ui-kit/content/AboutXavigate';
 import PrivacyPolicy from './ui-kit/content/PrivacyPolicy';
 import Terms from './ui-kit/content/Terms';
 
-// Content Layout component for legal and info pages
 function ContentLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  
+
   return (
     <div className="content-layout">
-      {/* Back Button */}
       <div style={{
         padding: '16px 24px',
         borderBottom: '1px solid #eee',
@@ -59,9 +51,8 @@ function ContentLayout({ children }: { children: React.ReactNode }) {
           ← Back
         </button>
       </div>
-      
-      {/* Content */}
-      <div style={{ 
+
+      <div style={{
         padding: '16px 0',
         maxHeight: 'calc(100vh - 64px)',
         overflowY: 'auto'
@@ -72,7 +63,6 @@ function ContentLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Simple HelpCenter component as a placeholder
 function HelpCenter() {
   return (
     <div style={{
@@ -83,35 +73,35 @@ function HelpCenter() {
       lineHeight: 1.6,
       color: '#333'
     }}>
-      <h1 style={{ 
-        fontSize: '28px', 
-        fontWeight: 600, 
+      <h1 style={{
+        fontSize: '28px',
+        fontWeight: 600,
         marginBottom: '24px',
-        color: '#4338ca' 
+        color: '#4338ca'
       }}>
         Help Center
       </h1>
       <p style={{ marginBottom: '16px' }}>
         Welcome to the Xavigate Help Center. Here you'll find resources to help you navigate the platform and get the most out of your experience.
       </p>
-      <h2 style={{ 
-        fontSize: '22px', 
-        fontWeight: 600, 
-        marginTop: '32px', 
+      <h2 style={{
+        fontSize: '22px',
+        fontWeight: 600,
+        marginTop: '32px',
         marginBottom: '16px',
-        color: '#333' 
+        color: '#333'
       }}>
         Getting Started
       </h2>
       <p style={{ marginBottom: '16px' }}>
         If you're new to Xavigate, start with our introductory guide to learn about the platform's key features and how to use them.
       </p>
-      <h2 style={{ 
-        fontSize: '22px', 
-        fontWeight: 600, 
-        marginTop: '32px', 
+      <h2 style={{
+        fontSize: '22px',
+        fontWeight: 600,
+        marginTop: '32px',
         marginBottom: '16px',
-        color: '#333' 
+        color: '#333'
       }}>
         Contact Support
       </h2>
@@ -167,10 +157,6 @@ function AppContent() {
         );
       case 'chat':
         return <ChatView />;
-      case 'reflect':
-        return <ReflectView />;
-      case 'plan':
-        return <PlanView />;
       case 'avatar':
         return (
           <AvatarComposer
@@ -192,7 +178,6 @@ function AppContent() {
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      {/* Only show sidebar on main app views, not on content pages */}
       {!isContentPage && (
         <Sidebar
           setActiveView={(view: string) => {
@@ -205,13 +190,12 @@ function AppContent() {
         />
       )}
 
-      <div style={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: '100vh' 
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh'
       }}>
-        {/* Only show mobile header on main app views, not on content pages */}
         {!isContentPage && (
           <MobileHeader
             onToggle={() => {
@@ -227,7 +211,6 @@ function AppContent() {
           backgroundColor: '#fafafa'
         }}>
           <Routes>
-            {/* Content pages */}
             <Route path="/about" element={
               <ContentLayout>
                 <AboutXavigate />
@@ -248,8 +231,6 @@ function AppContent() {
                 <HelpCenter />
               </ContentLayout>
             } />
-            
-            {/* Main application view */}
             <Route path="*" element={renderView()} />
           </Routes>
         </div>

@@ -27,29 +27,27 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
       avatar_id: selectedTone,
       prompt_framing: customDescription
     };
-  
+
     const payload = {
       uuid,
       preferences: {
         avatar_profile: profile
       }
     };
-  
+
     try {
       await fetch(`${backendUrl}/persistent-memory`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-  
-      // ✅ Update global context
+
       if (user) {
         setUser({ ...user, avatarProfile: profile });
       }
-  
-      // ✅ Trigger any local UI updates
+
       onSave?.(profile);
-  
+
       showToast('✅ Avatar saved!');
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
@@ -60,37 +58,111 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-      <h2>Avatar Composer</h2>
+    <div style={{
+      padding: '2rem',
+      maxWidth: '640px',
+      margin: '0 auto',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      <h2 style={{
+        fontSize: '24px',
+        fontWeight: '600',
+        marginBottom: '2rem',
+        color: '#111827'
+      }}>
+        Avatar Composer
+      </h2>
 
-      <label>Select a tone:</label>
-      <select
-        value={selectedTone}
-        onChange={(e) => setSelectedTone(e.target.value)}
-        style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem' }}
-      >
-        <option>Wise Mentor</option>
-        <option>Playful Friend</option>
-        <option>Stoic Guide</option>
-        <option>Poetic Philosopher</option>
-        <option>Soul Sister</option>
-        <option>Consigliere</option>
-      </select>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+        <div>
+          <label style={{
+            display: 'block',
+            fontWeight: '500',
+            marginBottom: '0.5rem',
+            color: '#374151'
+          }}>
+            Select a tone
+          </label>
+          <select
+            value={selectedTone}
+            onChange={(e) => setSelectedTone(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              fontSize: '14px',
+              borderRadius: '6px',
+              border: '1px solid #D1D5DB',
+              backgroundColor: 'white',
+              boxSizing: 'border-box'
+            }}
+          >
+            <option>Wise Mentor</option>
+            <option>Playful Friend</option>
+            <option>Stoic Guide</option>
+            <option>Poetic Philosopher</option>
+            <option>Soul Sister</option>
+            <option>Consigliere</option>
+          </select>
+        </div>
 
-      <label>Describe your avatar’s voice:</label>
-      <textarea
-        value={customDescription}
-        onChange={(e) => setCustomDescription(e.target.value)}
-        style={{ width: '100%', padding: '0.75rem', marginBottom: '1.5rem' }}
-      />
+        <div>
+          <label style={{
+            display: 'block',
+            fontWeight: '500',
+            marginBottom: '0.5rem',
+            color: '#374151'
+          }}>
+            Describe your avatar’s voice
+          </label>
+          <textarea
+            value={customDescription}
+            onChange={(e) => setCustomDescription(e.target.value)}
+            placeholder="e.g., gentle and thoughtful, with a touch of humor"
+            rows={8}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              fontSize: '14px',
+              borderRadius: '6px',
+              border: '1px solid #D1D5DB',
+              backgroundColor: 'white',
+              resize: 'none',
+              lineHeight: '1.5',
+              fontFamily: 'inherit',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
 
-      <div style={{ background: '#f5f5f5', padding: '1rem', marginBottom: '1rem' }}>
-        {generatePreview()}
+        <div
+          style={{
+            marginTop: '0.5rem',
+            backgroundColor: '#F3F4F6',
+            color: '#4B5563',
+            padding: '12px 16px',
+            borderRadius: '6px',
+            border: '1px solid #E5E7EB',
+            fontSize: '13px',
+            fontStyle: 'italic',
+            fontFamily: '"Georgia", serif',
+            lineHeight: '1.6',
+            whiteSpace: 'pre-wrap',
+            boxSizing: 'border-box'
+          }}
+        >
+          {generatePreview()}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <Button onClick={handleSave}>Save Avatar</Button>
+        </div>
+
+        {saved && (
+          <div style={{ fontSize: '14px', color: '#10B981', marginTop: '0.5rem' }}>
+            ✅ Saved
+          </div>
+        )}
       </div>
-
-      <Button onClick={handleSave}>Save Avatar</Button>
-
-      {saved && <div style={{ marginTop: '1rem', color: 'green' }}>✅ Saved</div>}
     </div>
   );
 }
