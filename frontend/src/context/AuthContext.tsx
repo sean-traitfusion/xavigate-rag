@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+} from 'react';
 
 type AvatarProfile = {
   avatar_id: string;
@@ -9,10 +14,9 @@ type User = {
   name: string;
   uuid: string;
   avatarProfile?: AvatarProfile;
-  onboardingCompleted?: boolean; // Added to skip onboarding
+  onboardingCompleted?: boolean;
 };
 
-// Define the shape of the context
 interface AuthContextType {
   user: User | null;
   signIn: (username: string) => void;
@@ -20,10 +24,8 @@ interface AuthContextType {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-// Create the context with an initial undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Custom hook for accessing the context
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (!context) {
@@ -32,7 +34,6 @@ export function useAuth(): AuthContextType {
   return context;
 }
 
-// Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
@@ -42,27 +43,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (username: string) => {
-    const storedUUID = localStorage.getItem('xavigate_user_uuid');
+    const uuidKey = 'xavigate_user_uuid';
+    const storedUUID = localStorage.getItem(uuidKey);
     const uuid = storedUUID || crypto.randomUUID();
 
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8010';
+
     if (!storedUUID) {
-      localStorage.setItem('xavigate_user_uuid', uuid);
+      localStorage.setItem(uuidKey, uuid);
       try {
-        await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/persistent-memory`, {
+        const res = await fetch(`${API_URL}/persistent-memory`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ uuid, preferences: {} })
+          body: JSON.stringify({ uuid, preferences: {} }),
         });
+
+        if (!res.ok) {
+          console.warn(`⚠️ Backend responded with ${res.status}:`, await res.text());
+        }
       } catch (err) {
-        console.warn('⚠️ Failed to initialize persistent memory:', err);
+        console.error('❌ Failed to contact backend:', err);
       }
     }
 
-    // Adding onboardingCompleted: true to skip the onboarding process
-    setUser({ 
-      name: username || 'Anonymous', 
+    setUser({
+      name: username || 'Anonymous',
       uuid,
-      onboardingCompleted: true
+      onboardingCompleted: true,
     });
   };
 
@@ -73,5 +80,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Export both the provider and the hook
 export { AuthContext };

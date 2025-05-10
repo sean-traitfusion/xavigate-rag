@@ -1,21 +1,25 @@
+// src/XavigateApp.tsx
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
-import SignIn from './ui-kit/components/account/SignIn';
+import SignIn from './app/components/account/SignIn';
 
-import Sidebar from './ui-kit/components/layout/Sidebar';
-import MobileHeader from './ui-kit/components/layout/MobileHeader';
+import Sidebar from './app/components/layout/Sidebar';
+import MobileHeader from './app/components/layout/MobileHeader';
 
-import ChatView from './ui-kit/components/chat/RagChatView';
-import AvatarComposer from './ui-kit/components/avatar/AvatarComposer';
-import AccountView from './ui-kit/components/account/AccountView';
-import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
-import MNTESTView from './ui-kit/components/MNTEST/MNTESTView';
+import ChatView from './app/components/chat/RagChatView';
+import AvatarComposer from './app/components/avatar/AvatarComposer';
+import AccountView from './app/components/account/AccountView';
+import { ToastProvider } from './app/components/toaster/ToastProvider';
+import MNTESTView from './app/components/MNTEST/MNTESTView';
 
-import AboutXavigate from './ui-kit/content/AboutXavigate';
-import PrivacyPolicy from './ui-kit/content/PrivacyPolicy';
-import Terms from './ui-kit/content/Terms';
+import AboutXavigate from './app/content/AboutXavigate';
+import PrivacyPolicy from './app/content/PrivacyPolicy';
+import Terms from './app/content/Terms';
+
+import UIKitPlayground from './playground/UIKitPlayground';
 
 function ContentLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
@@ -151,6 +155,8 @@ function AppContent() {
         return <AccountView />;
       case 'mntest':
         return <MNTESTView />;
+      case 'uikit':
+        return <UIKitPlayground />;
       default:
         return <div><h1>Unknown View</h1></div>;
     }
@@ -193,26 +199,10 @@ function AppContent() {
           backgroundColor: '#fafafa'
         }}>
           <Routes>
-            <Route path="/about" element={
-              <ContentLayout>
-                <AboutXavigate />
-              </ContentLayout>
-            } />
-            <Route path="/privacy" element={
-              <ContentLayout>
-                <PrivacyPolicy />
-              </ContentLayout>
-            } />
-            <Route path="/terms" element={
-              <ContentLayout>
-                <Terms />
-              </ContentLayout>
-            } />
-            <Route path="/help" element={
-              <ContentLayout>
-                <HelpCenter />
-              </ContentLayout>
-            } />
+            <Route path="/about" element={<ContentLayout><AboutXavigate /></ContentLayout>} />
+            <Route path="/privacy" element={<ContentLayout><PrivacyPolicy /></ContentLayout>} />
+            <Route path="/terms" element={<ContentLayout><Terms /></ContentLayout>} />
+            <Route path="/help" element={<ContentLayout><HelpCenter /></ContentLayout>} />
             <Route path="*" element={renderView()} />
           </Routes>
         </div>
