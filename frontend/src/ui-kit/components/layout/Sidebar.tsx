@@ -2,7 +2,10 @@ import React from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import UserMenu from '../layout/UserMenu';
 import {
-  Home, MessageSquare, Compass, User, UserCircle
+  MessageSquare,
+  Compass,
+  User,
+  UserCircle
 } from 'lucide-react';
 
 type SidebarProps = {
@@ -16,11 +19,6 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
   const { user } = useAuth();
 
   const navItems = [
-    {
-      id: 'getToKnowYou',
-      label: 'Get to Know You',
-      icon: <Home size={18} style={{ marginRight: '16px', color: '#3b82f6' }} />
-    },
     {
       id: 'chat',
       label: 'Chat',
@@ -91,7 +89,6 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
         ))}
       </div>
 
-      {/* Use the UserMenu component */}
       <UserMenu setActiveView={setActiveView} />
     </div>
   );

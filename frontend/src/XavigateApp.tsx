@@ -7,12 +7,10 @@ import SignIn from './ui-kit/components/account/SignIn';
 import Sidebar from './ui-kit/components/layout/Sidebar';
 import MobileHeader from './ui-kit/components/layout/MobileHeader';
 
-import HomeView from './ui-kit/components/home/GetToKnowYouView';
 import ChatView from './ui-kit/components/chat/RagChatView';
 import AvatarComposer from './ui-kit/components/avatar/AvatarComposer';
 import AccountView from './ui-kit/components/account/AccountView';
 import { ToastProvider } from './ui-kit/components/toaster/ToastProvider';
-import OnboardingWizard from './onboarding/OnboardingWizard';
 import MNTESTView from './ui-kit/components/MNTEST/MNTESTView';
 
 import AboutXavigate from './ui-kit/content/AboutXavigate';
@@ -117,17 +115,10 @@ function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [activeView, setActiveView] = useState<string>(() =>
-    localStorage.getItem('activeView') || 'getToKnowYou'
+    localStorage.getItem('activeView') || 'chat'
   );
   const location = useLocation();
   const isContentPage = ['/about', '/privacy', '/terms', '/help'].includes(location.pathname);
-
-  const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!user?.uuid) return;
-    setIsUnlocked(true);
-  }, [user?.uuid]);
 
   useEffect(() => {
     localStorage.setItem('activeView', activeView);
@@ -146,15 +137,6 @@ function AppContent() {
 
   const renderView = () => {
     switch (activeView) {
-      case 'getToKnowYou':
-        return (
-          <HomeView
-            onNavigate={(view: string) => {
-              setActiveView(view);
-              if (isMobile) setSidebarOpen(false);
-            }}
-          />
-        );
       case 'chat':
         return <ChatView />;
       case 'avatar':

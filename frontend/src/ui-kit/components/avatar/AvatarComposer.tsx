@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Button } from '../shared/Button';
 import { useToast } from '../toaster/useToast';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -154,7 +153,24 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <Button onClick={handleSave}>Save Avatar</Button>
+          <button
+            onClick={handleSave}
+            style={{
+              backgroundColor: '#4F46E5',
+              color: '#fff',
+              padding: '0.6rem 1.2rem',
+              fontSize: '14px',
+              fontWeight: 500,
+              borderRadius: '6px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4F46E5'}
+          >
+            Save Avatar
+          </button>
         </div>
 
         {saved && (
