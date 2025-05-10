@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import MessageItem from './MessageItem';
@@ -9,10 +9,12 @@ import AnimationStyles from './AnimationStyles';
 import { Message } from './types';
 import { getTimestamp, getOrCreateUserUUID } from './utils';
 
-export default function RagChatView() {
+export interface RagChatViewProps {}
+
+export default function RagChatView(props: RagChatViewProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const profile = user?.avatarProfile;
+
   const [uuid, setUUID] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -20,12 +22,13 @@ export default function RagChatView() {
   const [avatar, setAvatar] = useState('chappelle');
 
   const setActiveView = (view: string) => {
-    localStorage.setItem('activeView', view);
     console.log('Navigating to view:', view);
-    navigate('/'); // 👈 Route change without reload
+    navigate(`/${view}`);
   };
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const isInitialLoad = useRef(true);
+
   const [typingSpeed] = useState(8);
   const [typingChunkSize] = useState(2);
   const [typingVariability] = useState(true);
@@ -45,51 +48,46 @@ export default function RagChatView() {
       });
   }, [uuid]);
 
-  const isInitialLoad = useRef(true);
-
   useEffect(() => {
     if (messages.length > 0) {
-      if (isInitialLoad.current) {
-        bottomRef.current?.scrollIntoView({ behavior: 'auto' });
-        isInitialLoad.current = false;
-      } else {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }
+      const scrollBehavior = isInitialLoad.current ? 'auto' : 'smooth';
+      bottomRef.current?.scrollIntoView({ behavior: scrollBehavior });
+      isInitialLoad.current = false;
     }
   }, [messages, isTyping]);
 
   useEffect(() => {
-    const typingMessage = messages.find(m => m.isTyping === true);
-    if (typingMessage) {
-      const fullText = typingMessage.fullText || '';
-      const currentText = typingMessage.text || '';
-      if (currentText.length < fullText.length) {
-        const charsToAdd = Math.min(typingChunkSize, fullText.length - currentText.length);
-        const newText = fullText.substring(0, currentText.length + charsToAdd);
-        const nextChar = fullText[currentText.length];
-        let adjustedSpeed = typingSpeed;
+    const typingMessage = messages.find(m => m.isTyping);
+    if (!typingMessage) return;
 
-        if (typingVariability && nextChar) {
-          if ('.!?'.includes(nextChar)) adjustedSpeed *= 4;
-          else if (',;:'.includes(nextChar)) adjustedSpeed *= 2;
-          else if (nextChar === ' ' && Math.random() < 0.1) adjustedSpeed *= 1.5;
-        }
+    const fullText = typingMessage.fullText || '';
+    const currentText = typingMessage.text || '';
 
-        const timer = setTimeout(() => {
-          setMessages(prev =>
-            prev.map(m =>
-              m.isTyping ? { ...m, text: newText } : m
-            )
-          );
-        }, adjustedSpeed);
-
-        return () => clearTimeout(timer);
-      } else {
-        setMessages(prev =>
-          prev.map(m => m.isTyping ? { ...m, isTyping: false } : m)
-        );
-      }
+    if (currentText.length >= fullText.length) {
+      setMessages(prev =>
+        prev.map(m => (m.isTyping ? { ...m, isTyping: false } : m))
+      );
+      return;
     }
+
+    const charsToAdd = Math.min(typingChunkSize, fullText.length - currentText.length);
+    const newText = fullText.substring(0, currentText.length + charsToAdd);
+    const nextChar = fullText[currentText.length];
+    let adjustedSpeed = typingSpeed;
+
+    if (typingVariability && nextChar) {
+      if ('.!?'.includes(nextChar)) adjustedSpeed *= 4;
+      else if (',;:'.includes(nextChar)) adjustedSpeed *= 2;
+      else if (nextChar === ' ' && Math.random() < 0.1) adjustedSpeed *= 1.5;
+    }
+
+    const timer = setTimeout(() => {
+      setMessages(prev =>
+        prev.map(m => (m.isTyping ? { ...m, text: newText } : m))
+      );
+    }, adjustedSpeed);
+
+    return () => clearTimeout(timer);
   }, [messages, typingSpeed, typingChunkSize, typingVariability]);
 
   const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -205,7 +203,6 @@ export default function RagChatView() {
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: '#FAFAFA',
-          scrollBehavior: 'auto',
           justifyContent: messages.length > 0 ? 'flex-start' : 'flex-end'
         }}>
           {renderMessages()}
@@ -219,7 +216,7 @@ export default function RagChatView() {
           sendMessage={sendMessage}
           avatar={avatar}
           setAvatar={setAvatar}
-          setActiveView={setActiveView} // ✅ wired up correctly
+          setActiveView={setActiveView}
         />
       </div>
     </>

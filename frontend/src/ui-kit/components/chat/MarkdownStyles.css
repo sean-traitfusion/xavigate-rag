@@ -1,0 +1,91 @@
+/* src/ui-kit/components/chat/MarkdownStyles.css */
+.markdown-content {
+    font-family: "Georgia", serif;
+  }
+  
+  .markdown-content p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  
+  .markdown-content h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: #111827;
+  }
+  
+  .markdown-content h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: #111827;
+  }
+  
+  .markdown-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: #111827;
+  }
+  
+  .markdown-content ul, .markdown-content ol {
+    padding-left: 1.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  
+  .markdown-content li {
+    margin-bottom: 0.3em;
+  }
+  
+  .markdown-content blockquote {
+    border-left: 4px solid #E9D5FF;
+    padding-left: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-style: italic;
+    color: #4B5563;
+  }
+  
+  .markdown-content a {
+    color: #8B5CF6;
+    text-decoration: underline;
+  }
+  
+  .markdown-content pre {
+    background-color: #F1F5F9;
+    padding: 1em;
+    border-radius: 6px;
+    overflow: auto;
+    margin: 1em 0;
+  }
+  
+  .markdown-content code {
+    background-color: #F1F5F9;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: "Menlo", "Monaco", "Courier New", monospace;
+    font-size: 0.9em;
+    color: #3B82F6;
+  }
+  
+  .markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+  }
+  
+  .markdown-content th, .markdown-content td {
+    border: 1px solid #E2E8F0;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  
+  .markdown-content th {
+    background-color: #F8FAFC;
+    font-weight: 600;
+  }

@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
-import { 
-  ChevronUp, 
-  User, 
-  Settings, 
-  LogOut, 
-  Info, 
-  HelpCircle, 
-  Shield, 
-  FileText 
+import {
+  ChevronUp,
+  User,
+  Settings,
+  LogOut,
+  Info,
+  HelpCircle,
+  Shield,
+  FileText
 } from 'lucide-react';
 
 type UserMenuProps = {
@@ -23,21 +23,16 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
   const timeoutRef = useRef<number | null>(null);
   const navigate = useNavigate();
 
-  // Handle clicks outside of menu to close it
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
-  // Clear timeout on unmount
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current !== null) {
@@ -47,19 +42,25 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
   }, []);
 
   const handleMouseLeave = () => {
-    // Use a small delay before closing the menu to allow the user
-    // to move the mouse into the dropdown area
     timeoutRef.current = window.setTimeout(() => {
       setUserMenuOpen(false);
-    }, 300); // 300ms delay
+    }, 300);
   };
 
   const handleMouseEnter = () => {
-    // Clear the timeout if user moves back into the menu area
     if (timeoutRef.current !== null) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
+  };
+
+  const menuItemStyle: React.CSSProperties = {
+    padding: '0.75rem 1rem',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    borderBottom: '1px solid #e5e7eb',
+    fontSize: '0.85rem'
   };
 
   return (
@@ -94,9 +95,8 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
         }} />
       </div>
 
-      {/* Enhanced dropdown menu */}
       {userMenuOpen && (
-        <div 
+        <div
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           style={{
@@ -112,102 +112,67 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
             border: '1px solid #e5e7eb'
           }}
         >
-          {/* Account Settings Option */}
-          <div
-            onClick={() => {
-              setActiveView('account');
-              setUserMenuOpen(false);
-            }}
-            style={{
-              padding: '0.75rem 1rem',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderBottom: '1px solid #e5e7eb',
-              fontSize: '0.85rem'
-            }}
-          >
-            <Settings size={14} style={{ marginRight: '16px' }} />
-            Account Settings
-          </div>
-          
-          {/* About Xavigate */}
-          <div
-            onClick={() => {
-              navigate('/about');
-              setUserMenuOpen(false);
-            }}
-            style={{
-              padding: '0.75rem 1rem',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderBottom: '1px solid #e5e7eb',
-              fontSize: '0.85rem'
-            }}
-          >
-            <Info size={14} style={{ marginRight: '16px', color: '#4f46e5' }} />
-            About Xavigate
-          </div>
-          
-          {/* Help Center */}
-          <div
-            onClick={() => {
-              navigate('/help');
-              setUserMenuOpen(false);
-            }}
-            style={{
-              padding: '0.75rem 1rem',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderBottom: '1px solid #e5e7eb',
-              fontSize: '0.85rem'
-            }}
-          >
-            <HelpCircle size={14} style={{ marginRight: '16px', color: '#3b82f6' }} />
-            Help Center
-          </div>
-          
-          {/* Privacy Policy */}
-          <div
-            onClick={() => {
-              navigate('/privacy');
-              setUserMenuOpen(false);
-            }}
-            style={{
-              padding: '0.75rem 1rem',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderBottom: '1px solid #e5e7eb',
-              fontSize: '0.85rem'
-            }}
-          >
-            <Shield size={14} style={{ marginRight: '16px', color: '#10b981' }} />
-            Privacy Policy
-          </div>
-          
-          {/* Terms of Service */}
+          {/* 1. Terms of Service */}
           <div
             onClick={() => {
               navigate('/terms');
               setUserMenuOpen(false);
             }}
-            style={{
-              padding: '0.75rem 1rem',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderBottom: '1px solid #e5e7eb',
-              fontSize: '0.85rem'
-            }}
+            style={menuItemStyle}
           >
             <FileText size={14} style={{ marginRight: '16px', color: '#f59e0b' }} />
             Terms of Service
           </div>
-          
-          {/* Sign Out option */}
+
+          {/* 2. Privacy Policy */}
+          <div
+            onClick={() => {
+              navigate('/privacy');
+              setUserMenuOpen(false);
+            }}
+            style={menuItemStyle}
+          >
+            <Shield size={14} style={{ marginRight: '16px', color: '#10b981' }} />
+            Privacy Policy
+          </div>
+
+          {/* 3. About Xavigate */}
+          <div
+            onClick={() => {
+              navigate('/about');
+              setUserMenuOpen(false);
+            }}
+            style={menuItemStyle}
+          >
+            <Info size={14} style={{ marginRight: '16px', color: '#4f46e5' }} />
+            About Xavigate
+          </div>
+
+          {/* 4. Help Center */}
+          <div
+            onClick={() => {
+              navigate('/help');
+              setUserMenuOpen(false);
+            }}
+            style={menuItemStyle}
+          >
+            <HelpCircle size={14} style={{ marginRight: '16px', color: '#3b82f6' }} />
+            Help Center
+          </div>
+
+          {/* 5. Account Settings */}
+          <div
+            onClick={() => {
+              setActiveView('account');
+              setUserMenuOpen(false);
+            }}
+            style={menuItemStyle}
+          >
+            <Settings size={14} style={{ marginRight: '16px' }} />
+            Account Settings
+          </div>
+
+          {/* 6. Sign Out */}
           <div
             onClick={() => {
               signOut();
