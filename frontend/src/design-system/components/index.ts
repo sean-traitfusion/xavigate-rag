@@ -11,3 +11,4 @@ export { default as Tag } from './Tag';
 export { default as Tabs } from './Tabs';
 export { default as FormGroup } from './FormGroup';
 export { default as Form } from './Form';
+export { default as Card } from './Card';

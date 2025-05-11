@@ -1,16 +1,12 @@
-// src/design-system/components/Card.tsx
-
 import React from 'react';
 import { COLORS, SPACING, RADII } from '../theme/tokens';
 
 type CardVariant = 'outlined' | 'filled';
 
-interface CardProps {
-  children: React.ReactNode;
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   padding?: keyof typeof SPACING;
   borderRadius?: keyof typeof RADII;
   variant?: CardVariant;
-  onClick?: () => void;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -19,6 +15,8 @@ const Card: React.FC<CardProps> = ({
   borderRadius = 'md',
   variant = 'outlined',
   onClick,
+  style = {},
+  ...rest
 }) => {
   const baseStyles: React.CSSProperties = {
     padding: SPACING[padding],
@@ -41,7 +39,11 @@ const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div style={{ ...baseStyles, ...variants[variant] }} onClick={onClick}>
+    <div
+      onClick={onClick}
+      style={{ ...baseStyles, ...variants[variant], ...style }}
+      {...rest}
+    >
       {children}
     </div>
   );
