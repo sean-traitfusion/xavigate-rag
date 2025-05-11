@@ -1,7 +1,13 @@
-// src/ui-kit/components/MNTEST/MNTestForm.tsx
 import React, { useEffect, useState } from "react";
 import { QUESTIONS } from "./mnTestItems";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from '@/context/AuthContext';
+import ResponsiveWrapper from '@/layout/ResponsiveWrapper';
+import { useScreenSize } from '@/layout/useScreenSize';
+import {
+  Text,
+  Button,
+  FormGroup,
+} from '@/design-system/components';
 
 interface MNTestFormProps {
   onComplete: (traitScores: Record<string, number>) => void;
@@ -13,9 +19,9 @@ const MNTestForm: React.FC<MNTestFormProps> = ({ onComplete }) => {
 
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { isMobile, isTablet } = useScreenSize();
 
   const currentQuestion = QUESTIONS[currentIndex];
-  const trait = currentQuestion.trait;
   const currentAnswer = answers[currentIndex] ?? null;
 
   const handleSelect = (value: number) => {
@@ -98,111 +104,104 @@ const MNTestForm: React.FC<MNTestFormProps> = ({ onComplete }) => {
   }, [currentAnswer, currentIndex]);
 
   return (
-    <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      padding: '40px',
-      backgroundColor: 'white',
-      borderRadius: '12px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      textAlign: 'center'
-    }}>
-      <h2 style={{
-        fontSize: '24px',
-        fontWeight: 'bold',
-        color: '#1F2937',
-        marginBottom: '32px'
-      }}>
-        Question {currentIndex + 1} of {QUESTIONS.length}
-      </h2>
+    <ResponsiveWrapper style={{ maxWidth: '600px' }}>
+      <div
+        style={{
+          padding: '1.5rem',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+          textAlign: 'center',
+        }}
+      >
+        <Text variant="h2" style={{ marginBottom: '24px' }}>
+          Question {currentIndex + 1} of {QUESTIONS.length}
+        </Text>
 
-      <div style={{
-        minHeight: '120px',
-        maxWidth: '640px',
-        margin: '0 auto 32px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <p style={{
-          fontSize: '20px',
-          color: '#1F2937',
-          lineHeight: '1.6',
-          wordBreak: 'break-word'
-        }}>
-          {currentQuestion.text}
-        </p>
-      </div>
+        <div
+          style={{
+            minHeight: '100px',
+            margin: '0 auto 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 1rem',
+          }}
+        >
+          <Text variant="body" style={{ fontSize: '18px', lineHeight: '1.6' }}>
+            {currentQuestion.text}
+          </Text>
+        </div>
 
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '24px',
-        paddingTop: '16px',
-        marginBottom: '40px'
-      }}>
-        {[1, 2, 3, 4, 5].map((n) => (
-          <button
-            key={n}
-            onClick={() => handleSelect(n)}
+        <FormGroup>
+          <div
             style={{
-              width: '64px',
-              height: '64px',
-              fontSize: '18px',
-              fontWeight: 600,
-              borderRadius: '50%',
-              border: '2px solid',
-              borderColor: currentAnswer === n ? '#4F46E5' : '#D1D5DB',
-              backgroundColor: currentAnswer === n ? '#4F46E5' : 'transparent',
-              color: currentAnswer === n ? 'white' : '#1F2937',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '8px',
+              marginBottom: '32px',
+              width: '100%',
+              padding: '0 12px',
+              boxSizing: 'border-box',
             }}
           >
-            {n}
-          </button>
-        ))}
-      </div>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                onClick={() => handleSelect(n)}
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  borderRadius: '50%',
+                  border: '2px solid',
+                  borderColor: currentAnswer === n ? '#4F46E5' : '#D1D5DB',
+                  backgroundColor: currentAnswer === n ? '#4F46E5' : 'transparent',
+                  color: currentAnswer === n ? 'white' : '#1F2937',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+        </FormGroup>
 
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        paddingTop: '32px'
-      }}>
-        <button
-          onClick={handleBack}
-          disabled={currentIndex === 0}
+        <div
           style={{
-            padding: '8px 24px',
-            backgroundColor: '#E5E7EB',
-            color: '#1F2937',
-            borderRadius: '6px',
-            fontSize: '16px',
-            cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
-            opacity: currentIndex === 0 ? 0.5 : 1,
-            border: 'none'
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '12px',
+            padding: '0 12px',
           }}
         >
-          ← Back
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={!currentAnswer}
-          style={{
-            padding: '8px 24px',
-            backgroundColor: '#4F46E5',
-            color: 'white',
-            borderRadius: '6px',
-            fontSize: '16px',
-            cursor: !currentAnswer ? 'not-allowed' : 'pointer',
-            opacity: !currentAnswer ? 0.5 : 1,
-            border: 'none'
-          }}
-        >
-          {currentIndex === QUESTIONS.length - 1 ? "Submit" : "Next →"}
-        </button>
+          <Button
+            variant="secondary"
+            onClick={handleBack}
+            disabled={currentIndex === 0}
+            style={{
+              opacity: currentIndex === 0 ? 0.4 : 1,
+            }}
+          >
+            ←
+          </Button>
+
+          <Button
+            variant="primary"
+            onClick={handleNext}
+            disabled={!currentAnswer}
+            style={{
+              opacity: !currentAnswer ? 0.4 : 1,
+            }}
+          >
+            {currentIndex === QUESTIONS.length - 1 ? 'Submit' : '→'}
+          </Button>
+        </div>
       </div>
-    </div>
+    </ResponsiveWrapper>
   );
 };
 

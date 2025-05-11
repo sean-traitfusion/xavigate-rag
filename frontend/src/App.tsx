@@ -1,116 +1,119 @@
-// src/XavigateApp.tsx
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
-import SignIn from './app/components/account/SignIn';
+import SignIn from './components/account/SignIn';
 
-import Sidebar from './app/components/layout/Sidebar';
-import MobileHeader from './app/components/layout/MobileHeader';
+import Sidebar from './layout/Sidebar';
+import MobileHeader from './layout/MobileHeader';
 
-import ChatView from './app/components/chat/RagChatView';
-import AvatarComposer from './app/components/avatar/AvatarComposer';
-import AccountView from './app/components/account/AccountView';
-import { ToastProvider } from './app/components/toaster/ToastProvider';
-import MNTESTView from './app/components/MNTEST/MNTESTView';
+import ChatView from './components/chat/RagChatView';
+import AvatarComposer from './components/avatar/AvatarComposer';
+import AccountView from './components/account/AccountView';
+import { ToastProvider } from './components/toaster/ToastProvider';
+import MNTESTView from './components/MNTEST/MNTESTView';
 
-import AboutXavigate from './app/content/AboutXavigate';
-import PrivacyPolicy from './app/content/PrivacyPolicy';
-import Terms from './app/content/Terms';
+import AboutXavigate from './content/AboutXavigate';
+import PrivacyPolicy from './content/PrivacyPolicy';
+import Terms from './content/Terms';
 
 import UIKitPlayground from './playground/UIKitPlayground';
+import ResponsiveWrapper from '@/layout/ResponsiveWrapper';
 
 function ContentLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   return (
-    <div className="content-layout">
-      <div style={{
-        padding: '16px 24px',
-        borderBottom: '1px solid #eee',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            background: 'none',
-            border: 'none',
-            color: '#4338ca',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: 500,
-            padding: '6px 12px',
-            borderRadius: '6px',
-            transition: 'background-color 0.2s'
-          }}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-        >
-          ← Back
-        </button>
-      </div>
+    <ResponsiveWrapper>
+      <div className="content-layout">
+        <div style={{
+          padding: '16px 24px',
+          borderBottom: '1px solid #eee',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: 'none',
+              border: 'none',
+              color: '#4338ca',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              padding: '6px 12px',
+              borderRadius: '6px',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            ← Back
+          </button>
+        </div>
 
-      <div style={{
-        padding: '16px 0',
-        maxHeight: 'calc(100vh - 64px)',
-        overflowY: 'auto'
-      }}>
-        {children}
+        <div style={{
+          padding: '16px 0',
+          maxHeight: 'calc(100vh - 64px)',
+          overflowY: 'auto'
+        }}>
+          {children}
+        </div>
       </div>
-    </div>
+    </ResponsiveWrapper>
   );
 }
 
 function HelpCenter() {
   return (
-    <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      padding: '40px 24px',
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      lineHeight: 1.6,
-      color: '#333'
-    }}>
-      <h1 style={{
-        fontSize: '28px',
-        fontWeight: 600,
-        marginBottom: '24px',
-        color: '#4338ca'
-      }}>
-        Help Center
-      </h1>
-      <p style={{ marginBottom: '16px' }}>
-        Welcome to the Xavigate Help Center. Here you'll find resources to help you navigate the platform and get the most out of your experience.
-      </p>
-      <h2 style={{
-        fontSize: '22px',
-        fontWeight: 600,
-        marginTop: '32px',
-        marginBottom: '16px',
+    <ResponsiveWrapper>
+      <div style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        padding: '40px 24px',
+        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        lineHeight: 1.6,
         color: '#333'
       }}>
-        Getting Started
-      </h2>
-      <p style={{ marginBottom: '16px' }}>
-        If you're new to Xavigate, start with our introductory guide to learn about the platform's key features and how to use them.
-      </p>
-      <h2 style={{
-        fontSize: '22px',
-        fontWeight: 600,
-        marginTop: '32px',
-        marginBottom: '16px',
-        color: '#333'
-      }}>
-        Contact Support
-      </h2>
-      <p style={{ marginBottom: '16px' }}>
-        Need additional help? Our support team is here for you. Email us at support@xavigate.com.
-      </p>
-    </div>
+        <h1 style={{
+          fontSize: '28px',
+          fontWeight: 600,
+          marginBottom: '24px',
+          color: '#4338ca'
+        }}>
+          Help Center
+        </h1>
+        <p style={{ marginBottom: '16px' }}>
+          Welcome to the Xavigate Help Center. Here you'll find resources to help you navigate the platform and get the most out of your experience.
+        </p>
+        <h2 style={{
+          fontSize: '22px',
+          fontWeight: 600,
+          marginTop: '32px',
+          marginBottom: '16px',
+          color: '#333'
+        }}>
+          Getting Started
+        </h2>
+        <p style={{ marginBottom: '16px' }}>
+          If you're new to Xavigate, start with our introductory guide to learn about the platform's key features and how to use them.
+        </p>
+        <h2 style={{
+          fontSize: '22px',
+          fontWeight: 600,
+          marginTop: '32px',
+          marginBottom: '16px',
+          color: '#333'
+        }}>
+          Contact Support
+        </h2>
+        <p style={{ marginBottom: '16px' }}>
+          Need additional help? Our support team is here for you. Email us at support@xavigate.com.
+        </p>
+      </div>
+    </ResponsiveWrapper>
   );
 }
 
@@ -211,7 +214,7 @@ function AppContent() {
   );
 }
 
-export default function XavigateApp() {
+export default function App() {
   return (
     <AuthProvider>
       <ToastProvider>

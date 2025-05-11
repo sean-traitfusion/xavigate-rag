@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+
 import {
   Button,
   Input,
@@ -7,6 +8,7 @@ import {
   FormGroup,
   Text,
 } from '@/design-system/components';
+
 import { User, ArrowRight, Compass } from 'lucide-react';
 
 const SignIn: React.FC = () => {
@@ -30,7 +32,7 @@ const SignIn: React.FC = () => {
         boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'stretch', 
+        alignItems: 'stretch',
         gap: '1.5rem',
       }}
     >
@@ -47,7 +49,7 @@ const SignIn: React.FC = () => {
       </div>
 
       <Form onSubmit={handleSubmit}>
-        <FormGroup label="Enter your name:" htmlFor="username">
+        <FormGroup label="Enter your name or email:" htmlFor="username">
           <div style={{ position: 'relative', width: '100%' }}>
             <User
               size={16}
@@ -64,13 +66,13 @@ const SignIn: React.FC = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Your name"
+              placeholder="e.g. alan.turing"
               style={{
                 paddingLeft: '2.25rem',
                 height: '40px',
                 lineHeight: '1.5',
-                width: '100%', 
-                boxSizing: 'border-box', 
+                width: '100%',
+                boxSizing: 'border-box',
               }}
               required
             />

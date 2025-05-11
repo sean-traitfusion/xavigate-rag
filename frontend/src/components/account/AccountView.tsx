@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { Lock, User } from 'lucide-react';
 
 import ProfileTab from './account-tabs/ProfileTab';

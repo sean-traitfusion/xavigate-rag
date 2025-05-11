@@ -1,8 +1,7 @@
-// src/ui-kit/components/MNTEST/MNTESTView.tsx
 import React, { useState, useEffect } from 'react';
 import MNTestForm from './MNTestForm';
 import MNProfileView from './MNProfileView';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 interface MNTESTViewProps {
   onAskGPT?: (prompt: string) => void;

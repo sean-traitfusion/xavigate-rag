@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+
 import MessageItem from './MessageItem';
 import ThinkingIndicator from './ThinkingIndicator';
 import WelcomeScreen from './WelcomeScreen';
 import ChatInput from './ChatInput';
 import AnimationStyles from './AnimationStyles';
+
 import { Message } from './types';
 import { getTimestamp, getOrCreateUserUUID } from './utils';
 

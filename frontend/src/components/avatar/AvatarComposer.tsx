@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useToast } from '../toaster/useToast';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 type AvatarComposerProps = {
   uuid: string;
