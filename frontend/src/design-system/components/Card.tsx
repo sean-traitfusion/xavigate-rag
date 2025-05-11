@@ -39,11 +39,7 @@ const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div
-      onClick={onClick}
-      style={{ ...baseStyles, ...variants[variant], ...style }}
-      {...rest}
-    >
+    <div onClick={onClick} style={{ ...baseStyles, ...variants[variant], ...style }} {...rest}>
       {children}
     </div>
   );

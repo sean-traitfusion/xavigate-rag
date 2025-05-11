@@ -24,21 +24,21 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
   const handleSave = async () => {
     const profile = {
       avatar_id: selectedTone,
-      prompt_framing: customDescription
+      prompt_framing: customDescription,
     };
 
     const payload = {
       uuid,
       preferences: {
-        avatar_profile: profile
-      }
+        avatar_profile: profile,
+      },
     };
 
     try {
       await fetch(`${backendUrl}/persistent-memory`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (user) {
@@ -57,29 +57,35 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
   };
 
   return (
-    <div style={{
-      padding: '2rem',
-      maxWidth: '640px',
-      margin: '0 auto',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
-      <h2 style={{
-        fontSize: '24px',
-        fontWeight: '600',
-        marginBottom: '2rem',
-        color: '#111827'
-      }}>
+    <div
+      style={{
+        padding: '2rem',
+        maxWidth: '640px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      }}
+    >
+      <h2
+        style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginBottom: '2rem',
+          color: '#111827',
+        }}
+      >
         Avatar Composer
       </h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
         <div>
-          <label style={{
-            display: 'block',
-            fontWeight: '500',
-            marginBottom: '0.5rem',
-            color: '#374151'
-          }}>
+          <label
+            style={{
+              display: 'block',
+              fontWeight: '500',
+              marginBottom: '0.5rem',
+              color: '#374151',
+            }}
+          >
             Select a tone
           </label>
           <select
@@ -92,7 +98,7 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
               borderRadius: '6px',
               border: '1px solid #D1D5DB',
               backgroundColor: 'white',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
             }}
           >
             <option>Wise Mentor</option>
@@ -105,12 +111,14 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
         </div>
 
         <div>
-          <label style={{
-            display: 'block',
-            fontWeight: '500',
-            marginBottom: '0.5rem',
-            color: '#374151'
-          }}>
+          <label
+            style={{
+              display: 'block',
+              fontWeight: '500',
+              marginBottom: '0.5rem',
+              color: '#374151',
+            }}
+          >
             Describe your avatar’s voice
           </label>
           <textarea
@@ -128,7 +136,7 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
               resize: 'none',
               lineHeight: '1.5',
               fontFamily: 'inherit',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
             }}
           />
         </div>
@@ -146,7 +154,7 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
             fontFamily: '"Georgia", serif',
             lineHeight: '1.6',
             whiteSpace: 'pre-wrap',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
           }}
         >
           {generatePreview()}
@@ -164,19 +172,17 @@ export default function AvatarComposer({ uuid, backendUrl, onSave }: AvatarCompo
               borderRadius: '6px',
               border: 'none',
               cursor: 'pointer',
-              transition: 'background-color 0.2s ease'
+              transition: 'background-color 0.2s ease',
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4F46E5'}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#4338ca')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#4F46E5')}
           >
             Save Avatar
           </button>
         </div>
 
         {saved && (
-          <div style={{ fontSize: '14px', color: '#10B981', marginTop: '0.5rem' }}>
-            ✅ Saved
-          </div>
+          <div style={{ fontSize: '14px', color: '#10B981', marginTop: '0.5rem' }}>✅ Saved</div>
         )}
       </div>
     </div>

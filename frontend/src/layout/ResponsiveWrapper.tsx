@@ -9,17 +9,9 @@ interface ResponsiveWrapperProps {
 const ResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({ children, style = {} }) => {
   const { isMobile, isTablet } = useScreenSize();
 
-  const padding = isMobile
-    ? '1rem'
-    : isTablet
-    ? '2rem 3rem'
-    : '3rem 4rem';
+  const padding = isMobile ? '1rem' : isTablet ? '2rem 3rem' : '3rem 4rem';
 
-  const maxWidth = isMobile
-    ? '100%'
-    : isTablet
-    ? '768px'
-    : '960px';
+  const maxWidth = isMobile ? '100%' : isTablet ? '768px' : '960px';
 
   return (
     <div

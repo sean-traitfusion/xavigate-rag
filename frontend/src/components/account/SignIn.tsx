@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
-import {
-  Button,
-  Input,
-  Form,
-  FormGroup,
-  Text,
-} from '@/design-system/components';
+import { Button, Input, Form, FormGroup, Text } from '@/design-system/components';
 
 import { User, ArrowRight, Compass } from 'lucide-react';
 

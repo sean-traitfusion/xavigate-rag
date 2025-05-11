@@ -17,7 +17,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   sendMessage,
   avatar,
   setAvatar,
-  setActiveView
+  setActiveView,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -47,7 +47,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
     <div
       style={{
         borderTop: '1px solid #E5E7EB',
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
       }}
     >
       <div style={{ padding: '16px 24px 0' }}>
@@ -60,7 +60,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             borderRadius: '8px',
             padding: '8px 16px',
             backgroundColor: '#fff',
-            overflow: 'hidden'
+            overflow: 'hidden',
           }}
         >
           <textarea
@@ -80,7 +80,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
               fontFamily:
                 '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
               backgroundColor: 'transparent',
-              minHeight: '40px'
+              minHeight: '40px',
             }}
           />
           <button
@@ -94,7 +94,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
               background: 'transparent',
               border: 'none',
               cursor: input.trim() === '' ? 'default' : 'pointer',
-              borderRadius: '8px'
+              borderRadius: '8px',
             }}
           >
             <Send size={18} color="#8B5CF6" />

@@ -9,7 +9,7 @@ import {
   Info,
   HelpCircle,
   Shield,
-  FileText
+  FileText,
 } from 'lucide-react';
 
 type UserMenuProps = {
@@ -60,7 +60,7 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
     alignItems: 'center',
     cursor: 'pointer',
     borderBottom: '1px solid #e5e7eb',
-    fontSize: '0.85rem'
+    fontSize: '0.85rem',
   };
 
   return (
@@ -69,11 +69,11 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
       style={{
         padding: '1rem',
         borderTop: '1px solid #eee',
-        position: 'relative'
+        position: 'relative',
       }}
     >
       <div
-        onClick={() => setUserMenuOpen(prev => !prev)}
+        onClick={() => setUserMenuOpen((prev) => !prev)}
         style={{
           fontSize: '0.85rem',
           padding: '0.5rem',
@@ -82,17 +82,20 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           backgroundColor: userMenuOpen ? '#f3f4f6' : 'transparent',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <User size={14} style={{ marginRight: '16px' }} />
           <strong>{user?.name || 'Anonymous'}</strong>
         </div>
-        <ChevronUp size={14} style={{
-          transform: userMenuOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-          transition: 'transform 0.2s ease'
-        }} />
+        <ChevronUp
+          size={14}
+          style={{
+            transform: userMenuOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+            transition: 'transform 0.2s ease',
+          }}
+        />
       </div>
 
       {userMenuOpen && (
@@ -109,7 +112,7 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
             boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             marginBottom: '0.5rem',
             overflow: 'hidden',
-            border: '1px solid #e5e7eb'
+            border: '1px solid #e5e7eb',
           }}
         >
           {/* 1. Terms of Service */}
@@ -184,7 +187,7 @@ export default function UserMenu({ setActiveView }: UserMenuProps) {
               alignItems: 'center',
               color: '#f43f5e',
               cursor: 'pointer',
-              fontSize: '0.85rem'
+              fontSize: '0.85rem',
             }}
           >
             <LogOut size={14} style={{ marginRight: '16px' }} />

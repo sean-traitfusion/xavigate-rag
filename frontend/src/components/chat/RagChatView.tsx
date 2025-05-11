@@ -44,8 +44,8 @@ export default function RagChatView(props: RagChatViewProps) {
   useEffect(() => {
     if (!uuid) return;
     fetch(`${BACKEND_URL}/session-memory/${uuid}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data?.messages?.length) setMessages(data.messages);
       });
   }, [uuid]);
@@ -59,16 +59,14 @@ export default function RagChatView(props: RagChatViewProps) {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    const typingMessage = messages.find(m => m.isTyping);
+    const typingMessage = messages.find((m) => m.isTyping);
     if (!typingMessage) return;
 
     const fullText = typingMessage.fullText || '';
     const currentText = typingMessage.text || '';
 
     if (currentText.length >= fullText.length) {
-      setMessages(prev =>
-        prev.map(m => (m.isTyping ? { ...m, isTyping: false } : m))
-      );
+      setMessages((prev) => prev.map((m) => (m.isTyping ? { ...m, isTyping: false } : m)));
       return;
     }
 
@@ -84,9 +82,7 @@ export default function RagChatView(props: RagChatViewProps) {
     }
 
     const timer = setTimeout(() => {
-      setMessages(prev =>
-        prev.map(m => (m.isTyping ? { ...m, text: newText } : m))
-      );
+      setMessages((prev) => prev.map((m) => (m.isTyping ? { ...m, text: newText } : m)));
     }, adjustedSpeed);
 
     return () => clearTimeout(timer);
@@ -100,10 +96,10 @@ export default function RagChatView(props: RagChatViewProps) {
     const userMessage: Message = {
       sender: 'user',
       text: trimmed,
-      timestamp: getTimestamp()
+      timestamp: getTimestamp(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
 
@@ -112,14 +108,14 @@ export default function RagChatView(props: RagChatViewProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-XAVIGATE-KEY': 'supersecuredevkey'
+          'X-XAVIGATE-KEY': 'supersecuredevkey',
         },
         body: JSON.stringify({
           prompt: trimmed,
           uuid,
           avatar,
-          tone: avatar
-        })
+          tone: avatar,
+        }),
       });
 
       const data = await res.json();
@@ -131,10 +127,10 @@ export default function RagChatView(props: RagChatViewProps) {
         isTyping: true,
         sources: data.sources || [],
         followup: data.followup || null,
-        timestamp: getTimestamp()
+        timestamp: getTimestamp(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
       setIsTyping(false);
 
       await fetch(`${BACKEND_URL}/session-memory`, {
@@ -143,23 +139,30 @@ export default function RagChatView(props: RagChatViewProps) {
         body: JSON.stringify({
           uuid,
           conversation_log: {
-            messages: [...messages, userMessage, {
-              ...assistantMessage,
-              text: assistantMessage.fullText,
-              isTyping: false
-            }]
+            messages: [
+              ...messages,
+              userMessage,
+              {
+                ...assistantMessage,
+                text: assistantMessage.fullText,
+                isTyping: false,
+              },
+            ],
           },
-          interim_scores: {}
-        })
+          interim_scores: {},
+        }),
       });
     } catch (err) {
       console.error('Error fetching response:', err);
       setIsTyping(false);
-      setMessages(prev => [...prev, {
-        sender: 'assistant',
-        text: 'Sorry, I encountered an error. Please try again.',
-        timestamp: getTimestamp()
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'assistant',
+          text: 'Sorry, I encountered an error. Please try again.',
+          timestamp: getTimestamp(),
+        },
+      ]);
     }
   };
 
@@ -176,37 +179,37 @@ export default function RagChatView(props: RagChatViewProps) {
     }
 
     return messages.map((message, index) => (
-      <MessageItem
-        key={index}
-        message={message}
-        isUser={message.sender === 'user'}
-      />
+      <MessageItem key={index} message={message} isUser={message.sender === 'user'} />
     ));
   };
 
   return (
     <>
       <AnimationStyles />
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        background: '#FAFAFA',
-        borderRadius: '12px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)',
-        maxWidth: '900px',
-        margin: '0 auto',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '24px',
+      <div
+        style={{
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: '#FAFAFA',
-          justifyContent: messages.length > 0 ? 'flex-start' : 'flex-end'
-        }}>
+          height: '100%',
+          background: '#FAFAFA',
+          borderRadius: '12px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)',
+          maxWidth: '900px',
+          margin: '0 auto',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '24px',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#FAFAFA',
+            justifyContent: messages.length > 0 ? 'flex-start' : 'flex-end',
+          }}
+        >
           {renderMessages()}
           {isTyping && <ThinkingIndicator />}
           <div ref={bottomRef} />

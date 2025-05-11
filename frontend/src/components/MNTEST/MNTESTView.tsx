@@ -23,15 +23,15 @@ const MNTESTView: React.FC<MNTESTViewProps> = ({ onAskGPT }) => {
     }
 
     fetch(`${BACKEND_URL}/mntest/profile/${uuid}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data?.traitScores && Object.keys(data.traitScores).length > 0) {
           setTraitScores(data.traitScores);
           setIsCompleted(true);
         }
         setIsLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Failed to load MN profile:', err);
         setIsLoading(false);
       });
@@ -48,20 +48,24 @@ const MNTESTView: React.FC<MNTESTViewProps> = ({ onAskGPT }) => {
 
   if (isLoading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '300px'
-      }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          border: '4px solid #E5E7EB',
-          borderTopColor: '#4F46E5',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
-        }}></div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '300px',
+        }}
+      >
+        <div
+          style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid #E5E7EB',
+            borderTopColor: '#4F46E5',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+          }}
+        ></div>
         <style>{`
           @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -77,11 +81,13 @@ const MNTESTView: React.FC<MNTESTViewProps> = ({ onAskGPT }) => {
       {isCompleted ? (
         <div>
           <MNProfileView traitScores={traitScores} onAskGPT={onAskGPT} />
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '32px'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '32px',
+            }}
+          >
             <button
               onClick={handleReset}
               style={{
@@ -91,7 +97,7 @@ const MNTESTView: React.FC<MNTESTViewProps> = ({ onAskGPT }) => {
                 border: '1px solid #D1D5DB',
                 borderRadius: '6px',
                 fontSize: '14px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               Take Test Again
@@ -100,27 +106,34 @@ const MNTESTView: React.FC<MNTESTViewProps> = ({ onAskGPT }) => {
         </div>
       ) : (
         <div>
-          <div style={{
-            marginBottom: '32px',
-            textAlign: 'center',
-            maxWidth: '800px',
-            margin: '0 auto'
-          }}>
-            <h1 style={{
-              fontSize: '28px',
-              fontWeight: 'bold',
-              color: '#1F2937',
-              marginBottom: '16px'
-            }}>
+          <div
+            style={{
+              marginBottom: '32px',
+              textAlign: 'center',
+              maxWidth: '800px',
+              margin: '0 auto',
+            }}
+          >
+            <h1
+              style={{
+                fontSize: '28px',
+                fontWeight: 'bold',
+                color: '#1F2937',
+                marginBottom: '16px',
+              }}
+            >
               Multiple Natures Assessment
             </h1>
-            <p style={{
-              fontSize: '16px',
-              color: '#4B5563',
-              lineHeight: '1.5'
-            }}>
-              This assessment will help you understand your natural traits and behavioral tendencies.
-              For each statement, rate how strongly you agree on a scale of 1 (strongly disagree) to 5 (strongly agree).
+            <p
+              style={{
+                fontSize: '16px',
+                color: '#4B5563',
+                lineHeight: '1.5',
+              }}
+            >
+              This assessment will help you understand your natural traits and behavioral
+              tendencies. For each statement, rate how strongly you agree on a scale of 1 (strongly
+              disagree) to 5 (strongly agree).
             </p>
           </div>
           <MNTestForm onComplete={handleComplete} />

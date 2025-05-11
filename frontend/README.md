@@ -45,7 +45,6 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-
 # Xavigate Superintelligent Onboarding + Memory System
 
 This project implements a next-generation onboarding, memory, and personalization framework for the Xavigate diagnostic engine using the Alignment Dynamics (AD) and Multiple Natures (MN) systems. It builds on our existing session memory, persistent memory, and RAG infrastructure.
@@ -105,20 +104,22 @@ xavigate-intelligence/
 
 ## 🧬 Alignment Metrics Implemented
 
-| Metric | Description | Range | Source |
-|--------|-------------|--------|--------|
-| TAS    | Trait Alignment Score | 0–10 | Trait usage/suppression【21†source】 |
-| SAS    | Situational Alignment Score | 0–10 | Environmental fit【20†source】 |
-| AX     | Alignment Index | 0–100 | (TAS + SAS) / 2【13†source】 |
-| AQ     | Alignment Quotient | 0–100 | 7-dimension rubric【15†source】 |
-| ASS    | Alignment Stability Score | 0–100 | Trend of AX over time【19†source】 |
+| Metric | Description                 | Range | Source                               |
+| ------ | --------------------------- | ----- | ------------------------------------ |
+| TAS    | Trait Alignment Score       | 0–10  | Trait usage/suppression【21†source】 |
+| SAS    | Situational Alignment Score | 0–10  | Environmental fit【20†source】       |
+| AX     | Alignment Index             | 0–100 | (TAS + SAS) / 2【13†source】         |
+| AQ     | Alignment Quotient          | 0–100 | 7-dimension rubric【15†source】      |
+| ASS    | Alignment Stability Score   | 0–100 | Trend of AX over time【19†source】   |
 
 ---
 
 ## 🏷 Alignment Tags
+
 Tags track patterns like burnout, quadrant drift, or suppressed traits. See `tags/registry.py` for definitions.
 
 Each tag includes:
+
 - `tag_id` (e.g. `creative_trait_suppression`)
 - `category` (trait_misalignment, emotional_risk, etc.)
 - `trigger_source` (onboarding, reflection, quadrant_transition...)
@@ -130,7 +131,9 @@ Reference: [Alignment Tags Framework]【14†source】
 ---
 
 ## 🎭 Avatar Composer
+
 Users define their preferred voice via:
+
 - Real/fictive people or characters
 - Archetypes or energy metaphors
 - Relational role descriptions
@@ -148,13 +151,15 @@ Reference: [Avatar Composer Spec]【16†source】
 3. **[ ] Create onboarding wizard** (frontend) + logic flow (backend)
 4. **[ ] Tag inference engine + rules**
 5. **[ ] Live session modulation and scoring**
-6. **[ ] Prompt tone matching via Avatar Composer
-7. **[ ] Historical memory tracking and trend logic (ASS)
+6. \*\*[ ] Prompt tone matching via Avatar Composer
+7. \*\*[ ] Historical memory tracking and trend logic (ASS)
 
 ---
 
 ## 🧪 Testing
+
 Run unit tests for metric scoring with sample onboarding payloads:
+
 ```bash
 pytest tests/
 ```
@@ -162,6 +167,7 @@ pytest tests/
 ---
 
 ## 📚 References
+
 - [Onboarding Flow]【18†source】
 - [Session Flow Logic]【19†source】
 - [Master Parameter List]【17†source】
@@ -173,4 +179,3 @@ pytest tests/
 ---
 
 Let’s make our AI remember who you are — and reflect it back with truth, nuance, and care.
-

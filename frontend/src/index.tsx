@@ -4,13 +4,11 @@ import './index.css';
 import XavigateApp from './App';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <XavigateApp />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 reportWebVitals();

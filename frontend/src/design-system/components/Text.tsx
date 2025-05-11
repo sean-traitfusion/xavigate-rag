@@ -1,32 +1,9 @@
 import React from 'react';
-import {
-  FONT_SIZES,
-  FONT_WEIGHTS,
-  LINE_HEIGHTS,
-  FONT_FAMILIES,
-} from '../theme/typography';
+import { FONT_SIZES, FONT_WEIGHTS, LINE_HEIGHTS, FONT_FAMILIES } from '../theme/typography';
 
-type TextVariant =
-  | 'body'
-  | 'caption'
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'subtitle'
-  | 'button';
+type TextVariant = 'body' | 'caption' | 'h1' | 'h2' | 'h3' | 'h4' | 'subtitle' | 'button';
 
-type ElementType =
-  | 'p'
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'h5'
-  | 'h6'
-  | 'span'
-  | 'div'
-  | 'label';
+type ElementType = 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'div' | 'label';
 
 interface TextProps {
   children: React.ReactNode;
@@ -88,13 +65,7 @@ const VARIANT_STYLES: Record<TextVariant, React.CSSProperties> = {
   },
 };
 
-const Text: React.FC<TextProps> = ({
-  children,
-  variant = 'body',
-  color,
-  as = 'p',
-  style = {},
-}) => {
+const Text: React.FC<TextProps> = ({ children, variant = 'body', color, as = 'p', style = {} }) => {
   const defaultElementMap: Record<TextVariant, ElementType> = {
     h1: 'h1',
     h2: 'h2',
@@ -111,7 +82,7 @@ const Text: React.FC<TextProps> = ({
   return React.createElement(
     Element,
     { style: { ...VARIANT_STYLES[variant], color, ...style } },
-    children
+    children,
   );
 };
 

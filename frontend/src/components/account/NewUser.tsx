@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { API_URL } from '@/config';
-import {
-  Button,
-  Input,
-  FormGroup,
-  Text,
-  Form,
-} from '@/design-system/components';
+import { Button, Input, FormGroup, Text, Form } from '@/design-system/components';
 
 export default function NewUser() {
   const { signIn } = useAuth();

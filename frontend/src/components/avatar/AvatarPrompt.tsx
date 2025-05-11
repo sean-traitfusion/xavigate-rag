@@ -11,7 +11,7 @@ export default function AvatarPrompt({
   uuid,
   setAvatar,
   setAvatarPromptVisible,
-  backendUrl
+  backendUrl,
 }: AvatarPromptProps) {
   const [inputValue, setInputValue] = useState('');
 
@@ -24,12 +24,12 @@ export default function AvatarPrompt({
       await fetch(`${backendUrl}/persistent-memory`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           uuid,
-          preferences: { avatar: chosen }
-        })
+          preferences: { avatar: chosen },
+        }),
       });
     }
   };
@@ -41,7 +41,7 @@ export default function AvatarPrompt({
         padding: '1rem',
         marginBottom: '1rem',
         borderRadius: '8px',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.1)'
+        boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
       }}
     >
       <p style={{ marginBottom: '0.5rem' }}>
@@ -58,7 +58,7 @@ export default function AvatarPrompt({
           padding: '0.5rem',
           border: '1px solid #ccc',
           borderRadius: '4px',
-          marginBottom: '0.5rem'
+          marginBottom: '0.5rem',
         }}
       />
       <p style={{ fontSize: '0.75rem', color: '#888' }}>Press Enter to confirm</p>

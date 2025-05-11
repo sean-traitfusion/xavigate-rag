@@ -27,9 +27,5 @@ export const Disabled: Story = {
 
 // ✅ THIS is what fixes the style prop error:
 export const CustomStyled: Story = {
-  render: () => (
-    <Button style={{ backgroundColor: '#4ade80' }}>
-      Green Button
-    </Button>
-  ),
+  render: () => <Button style={{ backgroundColor: '#4ade80' }}>Green Button</Button>,
 };

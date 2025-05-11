@@ -17,6 +17,7 @@ src/design-system/
 ## 🎨 Tokens (imported from `@/design-system/theme`)
 
 Available constants:
+
 - `COLORS`
 - `SPACE`
 - `RADII`
@@ -31,6 +32,7 @@ Available constants:
 ## 🧱 Components (imported from `@/design-system/components`)
 
 Available UI components:
+
 - `Button`
 - `Input`
 - `Textarea`
@@ -65,8 +67,9 @@ Create a `Select` dropdown using my design system. Use `SPACE`, `COLORS`, `Text`
 
 🛠 Tech Stack
 This app uses:
-* React
-* TypeScript
-* CSS-in-JS (style props or inline `style={{}}`)
-* No Tailwind classes (but token names resemble Tailwind scales)
-Keep this file updated if your design system evolves.
+
+- React
+- TypeScript
+- CSS-in-JS (style props or inline `style={{}}`)
+- No Tailwind classes (but token names resemble Tailwind scales)
+  Keep this file updated if your design system evolves.

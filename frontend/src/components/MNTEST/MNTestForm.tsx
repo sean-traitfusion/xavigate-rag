@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { QUESTIONS } from "./mnTestItems";
+import React, { useEffect, useState } from 'react';
+import { QUESTIONS } from './mnTestItems';
 import { useAuth } from '@/context/AuthContext';
 import ResponsiveWrapper from '@/layout/ResponsiveWrapper';
 import { useScreenSize } from '@/layout/useScreenSize';
-import {
-  Text,
-  Button,
-  FormGroup,
-} from '@/design-system/components';
+import { Text, Button, FormGroup } from '@/design-system/components';
 
 interface MNTestFormProps {
   onComplete: (traitScores: Record<string, number>) => void;
@@ -48,26 +44,26 @@ const MNTestForm: React.FC<MNTestFormProps> = ({ onComplete }) => {
         traitScores[trait] = parseFloat((avg * 2).toFixed(2));
       });
 
-      const BACKEND_URL = process.env.REACT_APP_API_URL || "http://localhost:8010";
+      const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8010';
 
       if (!uuid) {
-        console.error("❌ No user UUID found");
+        console.error('❌ No user UUID found');
         onComplete(traitScores);
         return;
       }
 
       fetch(`${BACKEND_URL}/mntest/submit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uuid, traitScores })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid, traitScores }),
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("✅ MNTEST submitted:", data);
+          console.log('✅ MNTEST submitted:', data);
           onComplete(traitScores);
         })
         .catch((err) => {
-          console.error("❌ Failed to submit MNTEST:", err);
+          console.error('❌ Failed to submit MNTEST:', err);
           onComplete(traitScores);
         });
     }
@@ -88,19 +84,19 @@ const MNTestForm: React.FC<MNTestFormProps> = ({ onComplete }) => {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       const key = e.key;
-      if (["1", "2", "3", "4", "5"].includes(key)) {
+      if (['1', '2', '3', '4', '5'].includes(key)) {
         handleSelect(parseInt(key));
-      } else if (key === "Enter" || key === "ArrowRight") {
+      } else if (key === 'Enter' || key === 'ArrowRight') {
         handleNext();
-      } else if (key === "ArrowLeft") {
+      } else if (key === 'ArrowLeft') {
         handleBack();
-      } else if (key === "Backspace" || key === "Delete") {
+      } else if (key === 'Backspace' || key === 'Delete') {
         handleClear();
       }
     };
 
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, [currentAnswer, currentIndex]);
 
   return (

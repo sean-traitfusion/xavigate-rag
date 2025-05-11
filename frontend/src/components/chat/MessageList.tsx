@@ -22,7 +22,7 @@ export default function MessageList({ messages, bottomRef }: MessageListProps) {
       grouped.push({
         sender: msg.sender,
         avatar: msg.sender === 'user' ? '🧑' : '🤖',
-        messages: [msg]
+        messages: [msg],
       });
     }
   }
@@ -36,7 +36,7 @@ export default function MessageList({ messages, bottomRef }: MessageListProps) {
         marginBottom: '1rem',
         flex: 1,
         overflowY: 'auto',
-        padding: '1rem'
+        padding: '1rem',
       }}
     >
       {grouped.map((group, idx) => (
@@ -46,7 +46,7 @@ export default function MessageList({ messages, bottomRef }: MessageListProps) {
             display: 'flex',
             flexDirection: group.sender === 'user' ? 'row-reverse' : 'row',
             alignItems: 'flex-start',
-            gap: '0.5rem'
+            gap: '0.5rem',
           }}
         >
           <div
@@ -57,7 +57,7 @@ export default function MessageList({ messages, bottomRef }: MessageListProps) {
               backgroundColor: '#ccc',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
           >
             {group.avatar}

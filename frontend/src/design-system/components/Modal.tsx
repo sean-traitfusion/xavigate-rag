@@ -30,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', .
       backgroundColor: 'transparent',
       color: '#4F46E5',
       borderColor: '#D1D5DB',
-    }
+    },
   };
 
   return (

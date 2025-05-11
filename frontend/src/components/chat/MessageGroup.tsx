@@ -9,15 +9,17 @@ interface Message {
 
 // Dummy MessageItem component for now — replace with real one later
 const MessageItem = ({ message, isUser }: { message: Message; isUser: boolean }) => (
-  <div style={{
-    textAlign: isUser ? 'right' : 'left',
-    margin: '4px 0',
-    padding: '8px',
-    borderRadius: '6px',
-    backgroundColor: isUser ? '#DCFCE7' : '#F1F5F9',
-    display: 'inline-block',
-    maxWidth: '80%'
-  }}>
+  <div
+    style={{
+      textAlign: isUser ? 'right' : 'left',
+      margin: '4px 0',
+      padding: '8px',
+      borderRadius: '6px',
+      backgroundColor: isUser ? '#DCFCE7' : '#F1F5F9',
+      display: 'inline-block',
+      maxWidth: '80%',
+    }}
+  >
     {message.text}
   </div>
 );
@@ -41,7 +43,7 @@ const MessageGroup: React.FC<MessageGroupProps> = ({ messages }) => {
       groupedMessages.push({
         sender: currentSender,
         messages: [...currentGroup],
-        timestamp: currentGroup[currentGroup.length - 1].timestamp || ''
+        timestamp: currentGroup[currentGroup.length - 1].timestamp || '',
       });
       currentGroup = [message];
       currentSender = message.sender;
@@ -51,7 +53,7 @@ const MessageGroup: React.FC<MessageGroupProps> = ({ messages }) => {
   groupedMessages.push({
     sender: currentSender,
     messages: [...currentGroup],
-    timestamp: currentGroup[currentGroup.length - 1].timestamp || ''
+    timestamp: currentGroup[currentGroup.length - 1].timestamp || '',
   });
 
   return (
@@ -59,38 +61,40 @@ const MessageGroup: React.FC<MessageGroupProps> = ({ messages }) => {
       {groupedMessages.map((group, groupIndex) => (
         <div key={groupIndex}>
           {group.messages.map((message, messageIndex) => (
-            <MessageItem
-              key={messageIndex}
-              message={message}
-              isUser={message.sender === 'user'}
-            />
+            <MessageItem key={messageIndex} message={message} isUser={message.sender === 'user'} />
           ))}
 
           {groupIndex < groupedMessages.length - 1 && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '16px 0',
-              color: '#9CA3AF',
-              fontSize: '12px',
-              fontFamily: 'system-ui, sans-serif'
-            }}>
-              <div style={{
-                height: '1px',
-                flex: 1,
-                backgroundColor: '#E5E7EB',
-                marginRight: '12px',
-                maxWidth: '100px'
-              }} />
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '16px 0',
+                color: '#9CA3AF',
+                fontSize: '12px',
+                fontFamily: 'system-ui, sans-serif',
+              }}
+            >
+              <div
+                style={{
+                  height: '1px',
+                  flex: 1,
+                  backgroundColor: '#E5E7EB',
+                  marginRight: '12px',
+                  maxWidth: '100px',
+                }}
+              />
               {group.timestamp}
-              <div style={{
-                height: '1px',
-                flex: 1,
-                backgroundColor: '#E5E7EB',
-                marginLeft: '12px',
-                maxWidth: '100px'
-              }} />
+              <div
+                style={{
+                  height: '1px',
+                  flex: 1,
+                  backgroundColor: '#E5E7EB',
+                  marginLeft: '12px',
+                  maxWidth: '100px',
+                }}
+              />
             </div>
           )}
         </div>

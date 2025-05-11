@@ -19,12 +19,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
   const CodeBlock = ({ node, inline, className, children, ...props }: any) => {
     const match = /language-(\w+)/.exec(className || '');
     return !inline && match ? (
-      <SyntaxHighlighter
-        style={materialLight}
-        language={match[1]}
-        PreTag="div"
-        {...props}
-      >
+      <SyntaxHighlighter style={materialLight} language={match[1]} PreTag="div" {...props}>
         {String(children).replace(/\n$/, '')}
       </SyntaxHighlighter>
     ) : (
@@ -36,7 +31,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
           borderRadius: '3px',
           fontFamily: '"Menlo", "Monaco", "Courier New", monospace',
           fontSize: '0.9em',
-          color: '#3B82F6'
+          color: '#3B82F6',
         }}
         {...props}
       >
@@ -58,7 +53,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
         style={{
           display: 'flex',
           justifyContent: 'flex-start', // changed from flex-end
-          marginBottom: '16px'
+          marginBottom: '16px',
         }}
       >
         <div
@@ -72,7 +67,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
             color: '#111827',
             fontFamily: '"Georgia", serif',
             boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-            border: '1px solid rgba(219, 234, 254, 0.8)'
+            border: '1px solid rgba(219, 234, 254, 0.8)',
           }}
         >
           {message.text}
@@ -88,7 +83,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
         marginBottom: '16px',
         paddingLeft: '16px',
         maxWidth: '85%',
-        position: 'relative'
+        position: 'relative',
       }}
       onMouseEnter={() => setShowIcon(true)}
       onMouseLeave={() => {
@@ -105,19 +100,55 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
           fontFamily: '"Georgia", serif',
           paddingBottom: '32px',
           WebkitFontSmoothing: 'antialiased',
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
             code: CodeBlock,
-            p: ({ node, ...props }) => <p style={{ marginTop: '0.4em', marginBottom: '0.4em' }} {...props} />,
-            h1: ({ node, ...props }) => <h1 style={{ fontSize: '24px', fontWeight: '600', margin: '1em 0 0.5em', color: '#111827' }} {...props} />,
-            h2: ({ node, ...props }) => <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '1em 0 0.5em', color: '#111827' }} {...props} />,
-            h3: ({ node, ...props }) => <h3 style={{ fontSize: '18px', fontWeight: '600', margin: '1em 0 0.5em', color: '#111827' }} {...props} />,
-            ul: ({ node, ...props }) => <ul style={{ paddingLeft: '1.5em', margin: '0.5em 0' }} {...props} />,
-            ol: ({ node, ...props }) => <ol style={{ paddingLeft: '1.5em', margin: '0.5em 0' }} {...props} />,
+            p: ({ node, ...props }) => (
+              <p style={{ marginTop: '0.4em', marginBottom: '0.4em' }} {...props} />
+            ),
+            h1: ({ node, ...props }) => (
+              <h1
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '600',
+                  margin: '1em 0 0.5em',
+                  color: '#111827',
+                }}
+                {...props}
+              />
+            ),
+            h2: ({ node, ...props }) => (
+              <h2
+                style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  margin: '1em 0 0.5em',
+                  color: '#111827',
+                }}
+                {...props}
+              />
+            ),
+            h3: ({ node, ...props }) => (
+              <h3
+                style={{
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  margin: '1em 0 0.5em',
+                  color: '#111827',
+                }}
+                {...props}
+              />
+            ),
+            ul: ({ node, ...props }) => (
+              <ul style={{ paddingLeft: '1.5em', margin: '0.5em 0' }} {...props} />
+            ),
+            ol: ({ node, ...props }) => (
+              <ol style={{ paddingLeft: '1.5em', margin: '0.5em 0' }} {...props} />
+            ),
             li: ({ node, ...props }) => <li style={{ marginBottom: '0.3em' }} {...props} />,
             blockquote: ({ node, ...props }) => (
               <blockquote
@@ -127,7 +158,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
                   marginLeft: 0,
                   marginRight: 0,
                   fontStyle: 'italic',
-                  color: '#4B5563'
+                  color: '#4B5563',
                 }}
                 {...props}
               />
@@ -141,9 +172,30 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
                 {...props}
               />
             ),
-            table: ({ node, ...props }) => <table style={{ borderCollapse: 'collapse', width: '100%', margin: '1em 0' }} {...props} />,
-            th: ({ node, ...props }) => <th style={{ border: '1px solid #E2E8F0', padding: '8px 12px', textAlign: 'left', backgroundColor: '#F8FAFC', fontWeight: '600' }} {...props} />,
-            td: ({ node, ...props }) => <td style={{ border: '1px solid #E2E8F0', padding: '8px 12px', textAlign: 'left' }} {...props} />,
+            table: ({ node, ...props }) => (
+              <table
+                style={{ borderCollapse: 'collapse', width: '100%', margin: '1em 0' }}
+                {...props}
+              />
+            ),
+            th: ({ node, ...props }) => (
+              <th
+                style={{
+                  border: '1px solid #E2E8F0',
+                  padding: '8px 12px',
+                  textAlign: 'left',
+                  backgroundColor: '#F8FAFC',
+                  fontWeight: '600',
+                }}
+                {...props}
+              />
+            ),
+            td: ({ node, ...props }) => (
+              <td
+                style={{ border: '1px solid #E2E8F0', padding: '8px 12px', textAlign: 'left' }}
+                {...props}
+              />
+            ),
           }}
         >
           {message.text}
@@ -174,25 +226,27 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
                 justifyContent: 'center',
                 height: '100%',
                 width: '24px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               {showTooltip && !copied && (
-                <div style={{
-                  position: 'absolute',
-                  top: '125%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  backgroundColor: '#F3F4F6',
-                  color: '#374151',
-                  padding: '4px 8px',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  whiteSpace: 'nowrap',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                  pointerEvents: 'none',
-                  opacity: 0.95
-                }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '125%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: '#F3F4F6',
+                    color: '#374151',
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                    pointerEvents: 'none',
+                    opacity: 0.95,
+                  }}
+                >
                   Copy
                 </div>
               )}
@@ -217,7 +271,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isUser }) => {
             padding: '12px 16px',
             backgroundColor: '#F9FAFB',
             borderRadius: '8px',
-            border: '1px solid #E5E7EB'
+            border: '1px solid #E5E7EB',
           }}
         >
           <div style={{ fontWeight: '500', marginBottom: '8px' }}>Sources:</div>

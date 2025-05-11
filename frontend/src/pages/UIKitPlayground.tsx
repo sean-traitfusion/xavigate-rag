@@ -1,5 +1,18 @@
 import React from 'react';
-import { Button, Input, Textarea, Text, Checkbox, Select, Switch, Slider, Tag, Tabs, FormGroup, Form } from '@/design-system/components';
+import {
+  Button,
+  Input,
+  Textarea,
+  Text,
+  Checkbox,
+  Select,
+  Switch,
+  Slider,
+  Tag,
+  Tabs,
+  FormGroup,
+  Form,
+} from '@/design-system/components';
 
 const UIKitPlayground: React.FC = () => {
   const [input, setInput] = React.useState('');
@@ -14,7 +27,12 @@ const UIKitPlayground: React.FC = () => {
     <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <Text variant="h2">UIKit Playground</Text>
 
-      <Form onSubmit={(e) => { e.preventDefault(); alert('Form submitted!'); }}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          alert('Form submitted!');
+        }}
+      >
         <FormGroup label="Email" htmlFor="email" helperText="We'll never share it." required>
           <Input
             id="email"
@@ -34,11 +52,7 @@ const UIKitPlayground: React.FC = () => {
         </FormGroup>
 
         <FormGroup>
-          <Checkbox
-            label="Accept terms"
-            checked={checked}
-            onChange={setChecked}
-          />
+          <Checkbox label="Accept terms" checked={checked} onChange={setChecked} />
         </FormGroup>
 
         <FormGroup label="Choose an option">
@@ -55,20 +69,11 @@ const UIKitPlayground: React.FC = () => {
         </FormGroup>
 
         <FormGroup>
-          <Switch
-            checked={switchOn}
-            onChange={setSwitchOn}
-            label="Enable feature"
-          />
+          <Switch checked={switchOn} onChange={setSwitchOn} label="Enable feature" />
         </FormGroup>
 
         <FormGroup label="Set energy level">
-          <Slider
-            min={0}
-            max={10}
-            value={sliderValue}
-            onChange={setSliderValue}
-          />
+          <Slider min={0} max={10} value={sliderValue} onChange={setSliderValue} />
         </FormGroup>
 
         <Button type="submit">Submit</Button>

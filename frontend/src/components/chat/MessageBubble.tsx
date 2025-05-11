@@ -17,7 +17,7 @@ export default function MessageBubble({ text, timestamp, sender }: MessageBubble
         padding: '0.75rem',
         marginBottom: '0.25rem',
         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
       <p
@@ -26,7 +26,7 @@ export default function MessageBubble({ text, timestamp, sender }: MessageBubble
           fontSize: '14px',
           lineHeight: '1.6',
           color: '#111827',
-          margin: 0
+          margin: 0,
         }}
       >
         {text}
@@ -34,7 +34,7 @@ export default function MessageBubble({ text, timestamp, sender }: MessageBubble
       <span
         style={{
           fontSize: '12px',
-          color: '#888'
+          color: '#888',
         }}
       >
         {timestamp}

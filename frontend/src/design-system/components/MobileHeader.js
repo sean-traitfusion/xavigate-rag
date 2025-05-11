@@ -5,17 +5,19 @@ export default function MobileHeader({ onToggle }) {
   const isMobile = window.innerWidth < 768;
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '1rem',
-      borderBottom: '1px solid #ddd',
-      backgroundColor: '#fff',
-      position: 'sticky',
-      top: 0,
-      zIndex: 90
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '1rem',
+        borderBottom: '1px solid #ddd',
+        backgroundColor: '#fff',
+        position: 'sticky',
+        top: 0,
+        zIndex: 90,
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {isMobile && (
           <button
@@ -24,7 +26,7 @@ export default function MobileHeader({ onToggle }) {
               fontSize: '1.5rem',
               background: 'none',
               border: 'none',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
             aria-label="Toggle menu"
           >

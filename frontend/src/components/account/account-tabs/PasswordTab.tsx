@@ -5,20 +5,20 @@ const PasswordTab: React.FC = () => {
   const [form, setForm] = useState({
     current: '',
     new: '',
-    confirm: ''
+    confirm: '',
   });
 
   const [visible, setVisible] = useState({
     current: false,
     new: false,
-    confirm: false
+    confirm: false,
   });
 
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
   const handleChange = (field: string, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -54,7 +54,7 @@ const PasswordTab: React.FC = () => {
         <input
           type={visible[key] ? 'text' : 'password'}
           value={form[key]}
-          onChange={e => handleChange(key, e.target.value)}
+          onChange={(e) => handleChange(key, e.target.value)}
           required
           style={{
             width: '100%',
@@ -63,12 +63,12 @@ const PasswordTab: React.FC = () => {
             fontSize: '14px',
             borderRadius: '6px',
             border: '1px solid #ddd',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
           }}
         />
         <button
           type="button"
-          onClick={() => setVisible(prev => ({ ...prev, [key]: !prev[key] }))}
+          onClick={() => setVisible((prev) => ({ ...prev, [key]: !prev[key] }))}
           style={{
             position: 'absolute',
             right: '8px',
@@ -77,7 +77,7 @@ const PasswordTab: React.FC = () => {
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            color: '#666'
+            color: '#666',
           }}
         >
           {visible[key] ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -88,9 +88,7 @@ const PasswordTab: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '480px', width: '100%', boxSizing: 'border-box' }}>
-      <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px' }}>
-        Change Password
-      </h2>
+      <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px' }}>Change Password</h2>
 
       <p style={{ fontSize: '14px', color: '#666', marginBottom: '24px' }}>
         Update your password to keep your account secure.
@@ -123,7 +121,7 @@ const PasswordTab: React.FC = () => {
               backgroundColor: 'white',
               color: '#333',
               fontSize: '14px',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Cancel
@@ -137,7 +135,7 @@ const PasswordTab: React.FC = () => {
               backgroundColor: '#4f46e5',
               color: 'white',
               fontSize: '14px',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Update Password

@@ -23,7 +23,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ avatar }) => {
     >
       <UserCircle size={20} color="#6366F1" />
       <Text variant="subtitle" style={{ color: '#374151' }}>
-        Welcome, <strong>{user?.name || 'Explorer'}</strong> — Avatar: <em>{avatar || 'Default'}</em>
+        Welcome, <strong>{user?.name || 'Explorer'}</strong> — Avatar:{' '}
+        <em>{avatar || 'Default'}</em>
       </Text>
     </div>
   );

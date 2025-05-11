@@ -3,13 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useScreenSize } from '@/layout/useScreenSize';
 import UserMenu from './UserMenu';
 import { Text } from '@/design-system/components';
-import {
-  MessageSquare,
-  Compass,
-  User,
-  UserCircle,
-  X
-} from 'lucide-react';
+import { MessageSquare, Compass, User, UserCircle, X } from 'lucide-react';
 
 type SidebarProps = {
   setActiveView: (view: string) => void;
@@ -26,18 +20,18 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
     {
       id: 'chat',
       label: 'Chat',
-      icon: <MessageSquare size={18} style={{ marginRight: '12px', color: '#10b981' }} />
+      icon: <MessageSquare size={18} style={{ marginRight: '12px', color: '#10b981' }} />,
     },
     {
       id: 'avatar',
       label: 'Avatar',
-      icon: <UserCircle size={18} style={{ marginRight: '12px', color: '#6366f1' }} />
+      icon: <UserCircle size={18} style={{ marginRight: '12px', color: '#6366f1' }} />,
     },
     {
       id: 'mntest',
       label: 'MN Profile',
-      icon: <User size={18} style={{ marginRight: '12px', color: '#f59e0b' }} />
-    }
+      icon: <User size={18} style={{ marginRight: '12px', color: '#f59e0b' }} />,
+    },
   ];
 
   return (
@@ -56,18 +50,23 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
         left: 0,
         zIndex: 100,
         padding: '1.5rem 1rem',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
       }}
     >
       <div>
         {/* Header with optional close */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1rem'
-        }}>
-          <Text variant="subtitle" style={{ display: 'flex', alignItems: 'center', color: '#4338ca', fontWeight: 600 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+          }}
+        >
+          <Text
+            variant="subtitle"
+            style={{ display: 'flex', alignItems: 'center', color: '#4338ca', fontWeight: 600 }}
+          >
             <Compass size={20} style={{ marginRight: '0.5rem' }} />
             Xavigate
           </Text>
@@ -82,7 +81,7 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
         </div>
 
         {/* Navigation */}
-        {navItems.map(item => (
+        {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveView(item.id)}
@@ -99,7 +98,7 @@ export default function Sidebar({ setActiveView, isVisible, onClose, activeView 
               fontSize: '0.95rem',
               cursor: 'pointer',
               border: 'none',
-              marginBottom: '0.25rem'
+              marginBottom: '0.25rem',
             }}
           >
             {item.icon}

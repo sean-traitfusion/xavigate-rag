@@ -1,10 +1,6 @@
 import React from 'react';
 import { COLORS, SPACING, RADII } from '../theme/tokens';
-import {
-  FONT_SIZES,
-  FONT_FAMILIES,
-  LINE_HEIGHTS,
-} from '../theme/typography';
+import { FONT_SIZES, FONT_FAMILIES, LINE_HEIGHTS } from '../theme/typography';
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
@@ -36,7 +32,7 @@ const Textarea: React.FC<TextareaProps> = ({
         lineHeight: LINE_HEIGHTS.normal,
         borderRadius: RADII.md,
         border: `1px solid ${COLORS.neutral?.[300] ?? COLORS.gray}`,
-        backgroundColor: disabled ? COLORS.neutral?.[100] ?? COLORS.light : COLORS.white,
+        backgroundColor: disabled ? (COLORS.neutral?.[100] ?? COLORS.light) : COLORS.white,
         color: COLORS.dark,
         resize: 'vertical',
         transition: 'border-color 0.2s ease',

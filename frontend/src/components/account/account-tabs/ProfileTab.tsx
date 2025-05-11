@@ -27,16 +27,18 @@ export default function ProfileTab({ user }: ProfileTabProps) {
       </h2>
 
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          borderRadius: '50%',
-          backgroundColor: '#e0e7ff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#4f46e5'
-        }}>
+        <div
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            backgroundColor: '#e0e7ff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#4f46e5',
+          }}
+        >
           <User size={32} />
         </div>
         <div style={{ marginLeft: '16px' }}>
@@ -54,7 +56,7 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             <input
               type="text"
               value={firstName}
-              onChange={e => setFirstName(e.target.value)}
+              onChange={(e) => setFirstName(e.target.value)}
               style={inputStyle}
               placeholder="First Name"
               required
@@ -66,7 +68,7 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             <input
               type="text"
               value={lastName}
-              onChange={e => setLastName(e.target.value)}
+              onChange={(e) => setLastName(e.target.value)}
               style={inputStyle}
               placeholder="Last Name"
             />
@@ -77,9 +79,7 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             <input
               type="text"
               value={username}
-              onChange={e =>
-                setUsername(e.target.value.toLowerCase().replace(/\s/g, ''))
-              }
+              onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
               style={inputStyle}
               placeholder="yourusername"
               required
@@ -91,7 +91,7 @@ export default function ProfileTab({ user }: ProfileTabProps) {
             <input
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               style={inputStyle}
               placeholder="Email Address"
               required
@@ -99,12 +99,14 @@ export default function ProfileTab({ user }: ProfileTabProps) {
           </div>
         </div>
 
-        <div style={{
-          marginTop: '24px',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px'
-        }}>
+        <div
+          style={{
+            marginTop: '24px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: '12px',
+          }}
+        >
           <button
             type="button"
             onClick={() => {
@@ -130,7 +132,7 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   marginBottom: '6px',
   fontSize: '14px',
-  fontWeight: 500
+  fontWeight: 500,
 };
 
 const inputStyle: React.CSSProperties = {
@@ -139,7 +141,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: '6px',
   border: '1px solid #ddd',
   fontSize: '14px',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
 };
 
 const cancelButtonStyle: React.CSSProperties = {
@@ -149,7 +151,7 @@ const cancelButtonStyle: React.CSSProperties = {
   backgroundColor: 'white',
   color: '#333',
   fontSize: '14px',
-  cursor: 'pointer'
+  cursor: 'pointer',
 };
 
 const saveButtonStyle: React.CSSProperties = {
@@ -159,5 +161,5 @@ const saveButtonStyle: React.CSSProperties = {
   backgroundColor: '#4f46e5',
   color: 'white',
   fontSize: '14px',
-  cursor: 'pointer'
+  cursor: 'pointer',
 };

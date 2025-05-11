@@ -4,7 +4,7 @@ import { ChevronUp, Check, Plus } from 'lucide-react';
 const AVATAR_OPTIONS = [
   { id: 'chappelle', name: 'Dave Chappelle', description: 'Satirical, sharp, truth-teller' },
   { id: 'dangerfield', name: 'Rodney Dangerfield', description: 'No respect, just real talk' },
-  { id: 'gaga', name: 'Lady Gaga', description: 'Expressive, bold, and fabulous' }
+  { id: 'gaga', name: 'Lady Gaga', description: 'Expressive, bold, and fabulous' },
 ];
 
 export interface ChatAvatarSelectorProps {
@@ -16,7 +16,7 @@ export interface ChatAvatarSelectorProps {
 const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
   selectedId,
   setSelectedId,
-  setActiveView
+  setActiveView,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -31,7 +31,7 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const current = AVATAR_OPTIONS.find(opt => opt.id === selectedId) || AVATAR_OPTIONS[0];
+  const current = AVATAR_OPTIONS.find((opt) => opt.id === selectedId) || AVATAR_OPTIONS[0];
 
   const handleCreateNewAvatar = () => {
     setIsOpen(false);
@@ -39,27 +39,29 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
   };
 
   return (
-    <div 
+    <div
       style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '8px 24px 16px',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
       }}
     >
-      <div style={{ 
-        fontSize: '12px',
-        color: '#9CA3AF',
-        flex: 1,
-        textAlign: 'center'
-      }}>
+      <div
+        style={{
+          fontSize: '12px',
+          color: '#9CA3AF',
+          flex: 1,
+          textAlign: 'center',
+        }}
+      >
         Press Enter to send, Shift+Enter for new line
       </div>
-      
+
       <div ref={dropdownRef} style={{ position: 'relative' }}>
         <div
-          onClick={() => setIsOpen(prev => !prev)}
+          onClick={() => setIsOpen((prev) => !prev)}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -67,16 +69,20 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
             fontSize: '14px',
             fontWeight: 500,
             color: '#111827',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           {current.name}
-          <ChevronUp size={14} color="#6B7280" style={{ 
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s ease' 
-          }} />
+          <ChevronUp
+            size={14}
+            color="#6B7280"
+            style={{
+              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          />
         </div>
-        
+
         {isOpen && (
           <div
             style={{
@@ -89,7 +95,7 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
               borderRadius: '12px',
               boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
               padding: '6px 0',
-              zIndex: 20
+              zIndex: 20,
             }}
           >
             {/* Create a New Avatar */}
@@ -102,7 +108,7 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
                 cursor: 'pointer',
                 borderBottom: '1px solid #E5E7EB',
                 marginBottom: '4px',
-                transition: 'background-color 0.2s ease'
+                transition: 'background-color 0.2s ease',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#F9FAFB';
@@ -111,16 +117,18 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              <div style={{ 
-                width: '32px',
-                height: '32px',
-                backgroundColor: '#8B5CF6',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: '12px'
-              }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#8B5CF6',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '12px',
+                }}
+              >
                 <Plus size={16} color="#fff" />
               </div>
               <div style={{ flex: 1 }}>
@@ -132,9 +140,9 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
                 </div>
               </div>
             </div>
-            
+
             {/* Avatar List */}
-            {AVATAR_OPTIONS.map(opt => {
+            {AVATAR_OPTIONS.map((opt) => {
               const selected = opt.id === selectedId;
               return (
                 <div
@@ -149,7 +157,7 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
                     padding: '8px 12px',
                     cursor: 'pointer',
                     backgroundColor: selected ? '#F3F4F6' : 'transparent',
-                    transition: 'background-color 0.2s ease'
+                    transition: 'background-color 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#F9FAFB';
@@ -160,22 +168,26 @@ const ChatAvatarSelector: React.FC<ChatAvatarSelectorProps> = ({
                     }
                   }}
                 >
-                  <div style={{ 
-                    width: '32px',
-                    height: '32px',
-                    backgroundColor: '#8B5CF6',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: '12px'
-                  }}>
+                  <div
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      backgroundColor: '#8B5CF6',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: '12px',
+                    }}
+                  >
                     <span style={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}>
                       {opt.name.charAt(0)}
                     </span>
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{opt.name}</div>
+                    <div style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>
+                      {opt.name}
+                    </div>
                     <div style={{ fontSize: '12px', color: '#6B7280' }}>{opt.description}</div>
                   </div>
                   {selected && <Check size={16} color="#8B5CF6" />}

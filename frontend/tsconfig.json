@@ -16,9 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["react"],
-    "baseUrl": "src",                     // ✅ added
-    "paths": {                            // ✅ added
-      "@/*": ["*"]
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@/design-system/*": ["design-system/*"],
+      "@/app/*": ["app/*"]
     }
   },
   "include": ["src"]

@@ -26,12 +26,14 @@ function ContentLayout({ children }: { children: React.ReactNode }) {
   return (
     <ResponsiveWrapper>
       <div className="content-layout">
-        <div style={{
-          padding: '16px 24px',
-          borderBottom: '1px solid #eee',
-          display: 'flex',
-          alignItems: 'center'
-        }}>
+        <div
+          style={{
+            padding: '16px 24px',
+            borderBottom: '1px solid #eee',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <button
             onClick={() => navigate(-1)}
             style={{
@@ -45,20 +47,22 @@ function ContentLayout({ children }: { children: React.ReactNode }) {
               fontWeight: 500,
               padding: '6px 12px',
               borderRadius: '6px',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
           >
             ← Back
           </button>
         </div>
 
-        <div style={{
-          padding: '16px 0',
-          maxHeight: 'calc(100vh - 64px)',
-          overflowY: 'auto'
-        }}>
+        <div
+          style={{
+            padding: '16px 0',
+            maxHeight: 'calc(100vh - 64px)',
+            overflowY: 'auto',
+          }}
+        >
           {children}
         </div>
       </div>
@@ -69,44 +73,55 @@ function ContentLayout({ children }: { children: React.ReactNode }) {
 function HelpCenter() {
   return (
     <ResponsiveWrapper>
-      <div style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        padding: '40px 24px',
-        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        lineHeight: 1.6,
-        color: '#333'
-      }}>
-        <h1 style={{
-          fontSize: '28px',
-          fontWeight: 600,
-          marginBottom: '24px',
-          color: '#4338ca'
-        }}>
+      <div
+        style={{
+          maxWidth: '800px',
+          margin: '0 auto',
+          padding: '40px 24px',
+          fontFamily:
+            'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          lineHeight: 1.6,
+          color: '#333',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '28px',
+            fontWeight: 600,
+            marginBottom: '24px',
+            color: '#4338ca',
+          }}
+        >
           Help Center
         </h1>
         <p style={{ marginBottom: '16px' }}>
-          Welcome to the Xavigate Help Center. Here you'll find resources to help you navigate the platform and get the most out of your experience.
+          Welcome to the Xavigate Help Center. Here you'll find resources to help you navigate the
+          platform and get the most out of your experience.
         </p>
-        <h2 style={{
-          fontSize: '22px',
-          fontWeight: 600,
-          marginTop: '32px',
-          marginBottom: '16px',
-          color: '#333'
-        }}>
+        <h2
+          style={{
+            fontSize: '22px',
+            fontWeight: 600,
+            marginTop: '32px',
+            marginBottom: '16px',
+            color: '#333',
+          }}
+        >
           Getting Started
         </h2>
         <p style={{ marginBottom: '16px' }}>
-          If you're new to Xavigate, start with our introductory guide to learn about the platform's key features and how to use them.
+          If you're new to Xavigate, start with our introductory guide to learn about the platform's
+          key features and how to use them.
         </p>
-        <h2 style={{
-          fontSize: '22px',
-          fontWeight: 600,
-          marginTop: '32px',
-          marginBottom: '16px',
-          color: '#333'
-        }}>
+        <h2
+          style={{
+            fontSize: '22px',
+            fontWeight: 600,
+            marginTop: '32px',
+            marginBottom: '16px',
+            color: '#333',
+          }}
+        >
           Contact Support
         </h2>
         <p style={{ marginBottom: '16px' }}>
@@ -121,8 +136,8 @@ function AppContent() {
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [activeView, setActiveView] = useState<string>(() =>
-    localStorage.getItem('activeView') || 'chat'
+  const [activeView, setActiveView] = useState<string>(
+    () => localStorage.getItem('activeView') || 'chat',
   );
   const location = useLocation();
   const isContentPage = ['/about', '/privacy', '/terms', '/help'].includes(location.pathname);
@@ -161,7 +176,11 @@ function AppContent() {
       case 'uikit':
         return <UIKitPlayground />;
       default:
-        return <div><h1>Unknown View</h1></div>;
+        return (
+          <div>
+            <h1>Unknown View</h1>
+          </div>
+        );
     }
   };
 
@@ -181,31 +200,63 @@ function AppContent() {
         />
       )}
 
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh'
-      }}>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+        }}
+      >
         {!isContentPage && (
           <MobileHeader
             onToggle={() => {
-              if (isMobile) setSidebarOpen(prev => !prev);
+              if (isMobile) setSidebarOpen((prev) => !prev);
             }}
           />
         )}
 
-        <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: isContentPage ? 0 : '2rem',
-          backgroundColor: '#fafafa'
-        }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: isContentPage ? 0 : '2rem',
+            backgroundColor: '#fafafa',
+          }}
+        >
           <Routes>
-            <Route path="/about" element={<ContentLayout><AboutXavigate /></ContentLayout>} />
-            <Route path="/privacy" element={<ContentLayout><PrivacyPolicy /></ContentLayout>} />
-            <Route path="/terms" element={<ContentLayout><Terms /></ContentLayout>} />
-            <Route path="/help" element={<ContentLayout><HelpCenter /></ContentLayout>} />
+            <Route
+              path="/about"
+              element={
+                <ContentLayout>
+                  <AboutXavigate />
+                </ContentLayout>
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <ContentLayout>
+                  <PrivacyPolicy />
+                </ContentLayout>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <ContentLayout>
+                  <Terms />
+                </ContentLayout>
+              }
+            />
+            <Route
+              path="/help"
+              element={
+                <ContentLayout>
+                  <HelpCenter />
+                </ContentLayout>
+              }
+            />
             <Route path="*" element={renderView()} />
           </Routes>
         </div>

@@ -31,9 +31,7 @@ const Switch: React.FC<SwitchProps> = ({
         opacity: disabled ? 0.6 : 1,
       }}
     >
-      {label && (
-        <span style={{ color: COLORS.neutral[900], fontSize: '14px' }}>{label}</span>
-      )}
+      {label && <span style={{ color: COLORS.neutral[900], fontSize: '14px' }}>{label}</span>}
       <div
         style={{
           position: 'relative',

@@ -30,12 +30,7 @@ const variantColors = {
   },
 };
 
-const Tag: React.FC<TagProps> = ({
-  label,
-  variant = 'default',
-  onClick,
-  style = {},
-}) => {
+const Tag: React.FC<TagProps> = ({ label, variant = 'default', onClick, style = {} }) => {
   const colorSet = variantColors[variant];
 
   return (

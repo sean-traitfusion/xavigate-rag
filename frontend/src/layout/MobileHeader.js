@@ -14,16 +14,18 @@ export default function MobileHeader({ onToggle }) {
   if (!isMobile) return null;
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      padding: '1rem',
-      borderBottom: '1px solid #ddd',
-      backgroundColor: '#fff',
-      position: 'sticky',
-      top: 0,
-      zIndex: 90
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '1rem',
+        borderBottom: '1px solid #ddd',
+        backgroundColor: '#fff',
+        position: 'sticky',
+        top: 0,
+        zIndex: 90,
+      }}
+    >
       <button
         onClick={onToggle}
         style={{
@@ -31,7 +33,7 @@ export default function MobileHeader({ onToggle }) {
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          marginRight: '1rem'
+          marginRight: '1rem',
         }}
         aria-label="Toggle menu"
       >

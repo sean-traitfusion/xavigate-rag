@@ -1,8 +1,5 @@
 import React from 'react';
-import { 
-  Lock, 
-  User 
-} from 'lucide-react';
+import { Lock, User } from 'lucide-react';
 
 type AccountSidebarProps = {
   activeTab: string;
@@ -11,27 +8,33 @@ type AccountSidebarProps = {
 
 export default function AccountSidebar({ activeTab, setActiveTab }: AccountSidebarProps) {
   return (
-    <div style={{ 
-      width: window.innerWidth < 768 ? '100%' : '240px',
-      flexShrink: 0
-    }}>
+    <div
+      style={{
+        width: window.innerWidth < 768 ? '100%' : '240px',
+        flexShrink: 0,
+      }}
+    >
       <div style={{ marginBottom: '24px' }}>
-        <div style={{ 
-          fontSize: '12px', 
-          fontWeight: 600, 
-          textTransform: 'uppercase', 
-          color: '#666',
-          marginBottom: '8px',
-          letterSpacing: '0.05em'
-        }}>
+        <div
+          style={{
+            fontSize: '12px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            color: '#666',
+            marginBottom: '8px',
+            letterSpacing: '0.05em',
+          }}
+        >
           Personal
         </div>
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: window.innerWidth < 768 ? 'row' : 'column', 
-          gap: '8px' 
-        }}>
-          <button 
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: window.innerWidth < 768 ? 'row' : 'column',
+            gap: '8px',
+          }}
+        >
+          <button
             onClick={() => setActiveTab('profile')}
             style={{
               display: 'flex',
@@ -45,13 +48,13 @@ export default function AccountSidebar({ activeTab, setActiveTab }: AccountSideb
               fontSize: '14px',
               cursor: 'pointer',
               textAlign: 'left',
-              width: '100%'
+              width: '100%',
             }}
           >
             <User size={16} style={{ marginRight: '8px' }} />
             Profile
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('password')}
             style={{
               display: 'flex',
@@ -65,7 +68,7 @@ export default function AccountSidebar({ activeTab, setActiveTab }: AccountSideb
               fontSize: '14px',
               cursor: 'pointer',
               textAlign: 'left',
-              width: '100%'
+              width: '100%',
             }}
           >
             <Lock size={16} style={{ marginRight: '8px' }} />

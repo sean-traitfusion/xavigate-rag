@@ -37,9 +37,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, value, onChange, fullWidth = false })
               fontFamily: FONT_FAMILIES.body,
               background: 'none',
               border: 'none',
-              borderBottom: isActive
-                ? `2px solid ${COLORS.primary[500]}`
-                : '2px solid transparent',
+              borderBottom: isActive ? `2px solid ${COLORS.primary[500]}` : '2px solid transparent',
               color: isActive ? COLORS.primary[500] : COLORS.neutral[700],
               cursor: 'pointer',
               flex: fullWidth ? 1 : undefined,

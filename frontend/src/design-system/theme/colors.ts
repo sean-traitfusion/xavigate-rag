@@ -13,7 +13,7 @@ export const COLORS = {
     800: '#5B21B6',
     900: '#4C1D95',
   },
-  
+
   // Neutral colors
   neutral: {
     50: '#F9FAFB',
@@ -27,7 +27,7 @@ export const COLORS = {
     800: '#1F2937',
     900: '#111827',
   },
-  
+
   // Accent colors
   accent: {
     blue: {
@@ -51,7 +51,7 @@ export const COLORS = {
       700: '#B91C1C',
     },
   },
-  
+
   // Semantic colors
   semantic: {
     success: '#10B981',
@@ -59,14 +59,14 @@ export const COLORS = {
     error: '#EF4444',
     info: '#3B82F6',
   },
-  
+
   // Tiger status colors (from AD theory)
   tigers: {
-    hungry: '#F59E0B',    // Amber - needs more expression
-    overfed: '#EF4444',   // Red - overused
+    hungry: '#F59E0B', // Amber - needs more expression
+    overfed: '#EF4444', // Red - overused
     satisfied: '#10B981', // Green - well-balanced
   },
-  
+
   // Base colors
   white: '#FFFFFF',
   black: '#000000',

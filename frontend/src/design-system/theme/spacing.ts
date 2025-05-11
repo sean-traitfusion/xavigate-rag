@@ -1,7 +1,7 @@
 export const SPACING = {
-  sm: '0.5rem',   // 8px
-  md: '1rem',     // 16px
-  lg: '1.5rem',   // 24px
+  sm: '0.5rem', // 8px
+  md: '1rem', // 16px
+  lg: '1.5rem', // 24px
   px: '1px',
   '0': '0',
   '0.5': '0.125rem',
